@@ -52,4 +52,14 @@ contract Crowdfund {
         emit DropCampaign(_id);
     }
 
+    function withdraw(uint amount, address payable destAddr) public {
+       
+        require(msg.sender ==owner, "Only owner can withdraw");
+        require(amount <= balance, "Insufficent funds");
+
+        destAddr.transfer(amount);
+        balance -= amount;
+
+    }
+
 }

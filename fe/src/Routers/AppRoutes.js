@@ -11,6 +11,7 @@ const AppRoutes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/ProjectDetails/*" element={<ProjectDetails />} />
           <Route path="/MyProject/*" element={<MyProject />} />
+          <Route path="/StartProject" element={<StartProject />} />
         </Routes>
       </BrowserRouter>
     </Container>

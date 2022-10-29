@@ -20,12 +20,11 @@ contract Crowdfund {
         uint minContribution; //in weis
         uint currentAmount;
         uint goal;
-        uint balance;
         uint32 startTime;
         uint32 endTime;
         bool claimed;
     }
-
+    IERC20 public immutable token;
     uint public campaignCount;
     mapping(uint=> Campaign) public ongoingCampaigns; // map count to campaign e.g 0 => Campaign object
     mapping(uint=> mapping(address=>uint)) public potentialDonations; // map count to dict e.g 0 => {address1:100wei, ...., addressN:200wei}
@@ -48,7 +47,6 @@ contract Crowdfund {
             minContribution: 100,
             currentAmount: 0,
             goal: _goal,
-            balance: _balance,
             startTime: _startTime,
             endTime: _endTime,
             claimed: false

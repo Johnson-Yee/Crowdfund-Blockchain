@@ -12,14 +12,6 @@ const Header = () => {
   // Deactivate- logout
   const { active, account, library, activate, deactivate } = useWeb3React();
 
-  useUpdateEffect(() => {
-    console.log(account);
-  }, [account]);
-
-  // useMount(() => {
-  //   console.log(active);
-  // });
-
   async function connect() {
     try {
       await activate(injected);

@@ -1,15 +1,37 @@
 import React from 'react';
-import {
-  AppBar,
-  Button,
-  createTheme,
-  Grid,
-  ThemeProvider,
-  Toolbar,
-  Typography
-} from '@mui/material';
+import { AppBar, Button, Grid, Toolbar, Typography } from '@mui/material';
+import { useWeb3React } from '@web3-react/core';
+import { injected } from '../../Wallet/Connector';
+import { useUpdateEffect } from 'ahooks';
 
 const Header = () => {
+  // Active- bool isWalletConnected
+  // Account- user address
+  // Library- web3React functions
+  // Activate- function called to authenticate wallet
+  // Deactivate- logout
+  const { active, account, library, activate, deactivate } = useWeb3React();
+
+  async function connect() {
+    try {
+      await activate(injected);
+      console.log('login>>>>>>>>>>>>>', account);
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+
+  async function disconnect() {
+    try {
+      await deactivate();
+      console.log('logout>>>>>>>>>>>>>', account);
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+
+  const handleClickWallet = !active ? connect : disconnect;
+
   return (
     <AppBar position="static" sx={{ marginBottom: 4, bgcolor: 'primary' }}>
       <Toolbar>
@@ -25,9 +47,15 @@ const Header = () => {
               QUICKSTARTER
             </Typography>
           </Grid>
-          <Grid container item sm={4} alignItems="flex-end" justifyContent={'flex-end'}>
+          <Grid
+            container
+            item
+            sm={4}
+            alignItems="flex-end"
+            justifyContent={'flex-end'}
+            onClick={handleClickWallet}>
             <Button variant="outlined" color="secondary">
-              Connect Wallet
+              {!active ? 'Connect Wallet' : 'Disconnect Wallet'}
             </Button>
           </Grid>
         </Grid>

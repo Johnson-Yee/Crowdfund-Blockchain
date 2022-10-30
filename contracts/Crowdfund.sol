@@ -1,8 +1,5 @@
 // SPDX-License-Identifier: MIT
-// OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
 pragma solidity ^0.8.0;
-
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract Crowdfund {
     event StartCampaign(uint id, address creator, uint goal, uint startTime, uint endTime);
@@ -16,7 +13,8 @@ contract Crowdfund {
 
 
     struct Campaign {
-        address creator;
+        //Add in description string, image_url string, title string
+        address payable creator;
         uint minContribution; //in weis
         uint currentAmount;
         uint goal;
@@ -24,18 +22,10 @@ contract Crowdfund {
         uint32 endTime;
         bool claimed;
     }
-    IERC20 public immutable token;
     uint public campaignCount;
     mapping(uint=> Campaign) public ongoingCampaigns; // map count to campaign e.g 0 => Campaign object
     mapping(uint=> mapping(address=>uint)) public potentialDonations; // map count to dict e.g 0 => {address1:100wei, ...., addressN:200wei}
 
-        /*
-    IERC20 public immutable token;
-    An ERC20 token is a standard used for creating and issuing smart contracts on the Ethereum blockchain
-    */
-    constructor(address _token) {
-        token = IERC20(_token);
-    }
 
     // Allows entrepreuners to start a campaign
     function startCampaign(uint _goal, uint32 _startTime, uint32 _endTime) external {
@@ -43,7 +33,7 @@ contract Crowdfund {
         require(_startTime <= _endTime, "start must be before endTime");
         campaignCount++;
         ongoingCampaigns[campaignCount] = Campaign({
-            creator : msg.sender,
+            creator : payable(msg.sender),
             minContribution: 100,
             currentAmount: 0,
             goal: _goal,
@@ -70,55 +60,66 @@ contract Crowdfund {
     }
     
     // Allows people to donate and support a campaign
-    function donate(uint _id, uint _amount) external {
+    function donate(uint _id) public payable {
         Campaign storage campaign = ongoingCampaigns[_id];
         require(block.timestamp >= campaign.startTime, "Campaign has yet to be started");
         require(block.timestamp <= campaign.endTime, "Campaign has ended and is not receiving any more donation");
+        require(msg.value >= campaign.minContribution, "Amount supported must be more than minimum contribution of 100 weis");
+        campaign.currentAmount += msg.value;
+        potentialDonations[_id][msg.sender] += msg.value;
 
-        campaign.currentAmount += _amount;
-        potentialDonations[_id][msg.sender] += _amount;
-        token.transferFrom(msg.sender, address(this), _amount);
-
-        emit Donate(_id, msg.sender, _amount);
+        emit Donate(_id, msg.sender, msg.value);
     }
 
 
     // Allows donator to withdraw donation if it is still within the timeframe of the campaign
-    function withdraw(uint _id, uint _amount) external {
+    function withdraw(uint _id, uint _amount) public payable {
         Campaign storage campaign = ongoingCampaigns[_id];
         require(block.timestamp <= campaign.endTime, "Campaign has ended and withdraw operation can't be carried out");
-
+        require(potentialDonations[_id][msg.sender] >= _amount, "The amount you are trying to withdraw is < the amount you have pledged");
         campaign.currentAmount -= _amount;
         potentialDonations[_id][msg.sender] -= _amount;
-        token.transfer(msg.sender, _amount);
+        address payable withdrawee = payable(msg.sender);
+        withdrawee.transfer(_amount);
 
         emit Withdraw(_id, msg.sender, _amount);
     }      
 
     // Allows creator to access funds when goal's met
-    function payoutOnGoalMet(uint _id)  public isOwner(_id) {
+    function payoutOnGoalMet(uint _id)  public payable isOwner(_id) {
         Campaign storage campaign = ongoingCampaigns[_id];
         require(block.timestamp > campaign.endTime, "Campaign has not ended");
         require(campaign.currentAmount >= campaign.goal, "Campaign did not meet its goal and funds can't be accessed");
         require(!campaign.claimed, "Payout has already been claimed");
-
+        uint payout = campaign.currentAmount;
+        campaign.currentAmount = 0;
         campaign.claimed = true;
-        token.transfer(campaign.creator, campaign.currentAmount);
-
+        address payable owner = payable(msg.sender);
+        owner.transfer(payout);
         emit PayoutOnGoalMet(_id);
     }
 
     // Sends money back only after campaign has finished and campaign did not meet its goals
     function reimburse(uint _id) external {
-        Campaign memory campaign = ongoingCampaigns[_id];
+        Campaign storage campaign = ongoingCampaigns[_id];
         require(block.timestamp > campaign.endTime, "Campaign has not ended");
         require(campaign.currentAmount < campaign.goal, "Campaign has met its goal and operation reimburse cannot be carried out");
+        uint bal = potentialDonations[_id][msg.sender];       
+        require(bal>=0, "You have been reimbursed already.");
+        campaign.currentAmount -= bal;
 
-        uint bal = potentialDonations[_id][msg.sender];
         potentialDonations[_id][msg.sender] = 0;
-        token.transfer(msg.sender, bal);
-
+        address payable reimbursee = payable(msg.sender);
+        reimbursee.transfer(bal);
         emit Reimburse(_id, msg.sender, bal);
     }
 
+    function getAllCampaigns() public view returns (Campaign[] memory){
+        Campaign[] memory allCampaigns = new Campaign[](campaignCount);
+        for (uint i = 0; i<campaignCount; i++){
+            Campaign memory specificCampaign = ongoingCampaigns[i+1];
+            allCampaigns[i] =  specificCampaign;
+        }
+        return allCampaigns;
+    }
 }

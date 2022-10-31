@@ -1,45 +1,51 @@
-import { Button, Container, Grid, TextField, Typography } from '@mui/material';
-import React from 'react';
+import { Container, Grid, Typography } from '@mui/material';
+import { isEmpty } from 'lodash';
+import React, { useState } from 'react';
+import ProjectCard from '../../Components/ProjectCard/ProjectCard';
+import CreateProjectForm from './Container/Form/CreateProjectForm';
 
 const StartProject = () => {
+  const [title, setTitle] = useState('');
+  const [desc, setDesc] = useState('');
+  const [amt, setAmt] = useState(0);
+  const [deadline, setDeadline] = useState(0);
+
+  const isTitleValid = () => {
+    return !isEmpty(title);
+  };
+  const isDescValid = () => {
+    return !isEmpty(desc);
+  };
+  const isAmtValid = () => {
+    return amt % 1 == 0 && amt > 100;
+  };
+
+  const isInputValid = () => {
+    return isTitleValid && isDescValid && isAmtValid;
+  };
+
   return (
     <>
       <Container sx={{ marginBottom: 4 }}>
         <Typography variant="h1">Start a project</Typography>
       </Container>
-
-      <Grid
-        container
-        direction="column"
-        // justifyContent="center"
-        // alignItems="center"
-        rowSpacing={4}
-        width="50%"
-        mx="auto">
-        <Grid container item>
-          <Typography variant="h2">Project Title</Typography>
-          <TextField fullWidth id="title" required />
+      <Grid container spacing={3}>
+        <Grid container item sm={3}>
+          <ProjectCard
+            {...{
+              imageURL:
+                'https://play-lh.googleusercontent.com/UrY7BAZ-XfXGpfkeWg0zCCeo-7ras4DCoRalC_WXXWTK9q5b0Iw7B0YQMsVxZaNB7DM',
+              title: 'Spotify',
+              desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
+              creator: 'Ethan',
+              percFunded: 50,
+              amtPledged: 500,
+              deadline: 20
+            }}
+          />
         </Grid>
-        <Grid container item>
-          <Typography variant="h2">Project Creator</Typography>
-          <TextField fullWidth id="creator" required />
-        </Grid>
-        <Grid container item>
-          <Typography variant="h2">Project Description</Typography>
-          <TextField fullWidth id="desc" multiline rows={4} />
-        </Grid>
-        <Grid container item>
-          <Typography variant="h2">Amount Required</Typography>
-          <TextField fullWidth id="amt-required" required />
-        </Grid>
-        <Grid container item>
-          <Typography variant="h2">Deadline</Typography>
-          <TextField fullWidth id="deadline" required type="date" />
-        </Grid>
-        <Grid container item>
-          <Button fullWidth variant="contained" color="primary">
-            Submit
-          </Button>
+        <Grid container item sm={9}>
+          <CreateProjectForm />
         </Grid>
       </Grid>
     </>

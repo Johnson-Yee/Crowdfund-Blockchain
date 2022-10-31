@@ -8,5 +8,5 @@ export const getCampaignCount = () => {
   return crowdFund.methods.campaignCount().call();
 };
 export const getOngoingCampaigns = () => {
-  return crowdFund.methods.ongoingCampaigns().call();
+  return crowdFund.methods.ongoingCampaigns(0).call();
 };

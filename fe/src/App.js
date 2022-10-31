@@ -5,15 +5,18 @@ import Footer from './Components/Footer/Footer';
 import AppRoutes from './Routers/AppRoutes';
 import { ThemeProvider } from '@mui/system';
 import Theme from './Themes/Theme';
+import { BrowserRouter } from 'react-router-dom';
 
 function App() {
   return (
     <ThemeProvider theme={Theme}>
-      <div className="App">
-        <Header />
-        <AppRoutes />
-        <Footer />
-      </div>
+      <BrowserRouter>
+        <div className="App">
+          <Header />
+          <AppRoutes />
+          <Footer />
+        </div>
+      </BrowserRouter>
     </ThemeProvider>
   );
 }

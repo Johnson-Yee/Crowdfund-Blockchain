@@ -13,6 +13,7 @@ import {
   Grid,
   Button
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import { MOCK_PROJ_LIST } from '../../Constants/Mocks/MockProjList';
 
 const ProjectDetails = () => {
@@ -38,7 +39,7 @@ const ProjectDetails = () => {
           display: 'flex',
           flexDirection: 'column',
           padding: 0,
-          borderRadius: '0px',
+          borderRadius: '15px',
           bgcolor: '#D9D9D9'
         }}>
         <Grid sx={{ height: '100%', flexGrow: 1 }}>
@@ -52,7 +53,7 @@ const ProjectDetails = () => {
                 width: '30vw',
                 objectFit: 'fit',
                 flexGrow: 1,
-                borderRadius: '0px 0px 0px 0px'
+                borderRadius: '15px 0px 0px 0px'
               }}
             />
             <CardContent
@@ -68,10 +69,13 @@ const ProjectDetails = () => {
                   The Dark One Plush
                 </Typography>
                 <LinearProgress variant="determinate" value={10} />
-                <Button variant="contained">Scrap Project And Refund</Button>
+                <Button variant="contained" startIcon={<AddIcon />}>
+                  Scrap Project And Refund
+                </Button>
                 <Button variant="contained" disabled>
                   Withdraw Funds to Own Account
                 </Button>
+                <AddIcon />
                 <Typography variant="subtitle1" color="text.secondary">
                   By: Ethan
                 </Typography>

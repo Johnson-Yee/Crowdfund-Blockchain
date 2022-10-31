@@ -69,9 +69,7 @@ const ProjectDetails = () => {
                   The Dark One Plush
                 </Typography>
                 <LinearProgress variant="determinate" value={10} />
-                <Button variant="contained" startIcon={<AddIcon />}>
-                  Scrap Project And Refund
-                </Button>
+                <Button variant="contained">Scrap Project And Refund</Button>
                 <Button variant="contained" disabled>
                   Withdraw Funds to Own Account
                 </Button>

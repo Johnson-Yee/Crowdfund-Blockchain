@@ -1,7 +1,7 @@
 export const MOCK_PROJ_LIST = [
   {
-    imageURL:
-      'https://play-lh.googleusercontent.com/UrY7BAZ-XfXGpfkeWg0zCCeo-7ras4DCoRalC_WXXWTK9q5b0Iw7B0YQMsVxZaNB7DM',
+    id: 1,
+    imageURL: 'https://picsum.photos/400/300?random=1',
     title: 'Spotify',
     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
     creator: 'Ethan',
@@ -10,7 +10,8 @@ export const MOCK_PROJ_LIST = [
     deadline: 20
   },
   {
-    imageURL: 'https://cdn-icons-png.flaticon.com/512/124/124010.png',
+    id: 2,
+    imageURL: 'https://picsum.photos/400/300?random=2',
     title: 'Facebook',
     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     creator: 'Ethan',
@@ -19,7 +20,8 @@ export const MOCK_PROJ_LIST = [
     deadline: 1000
   },
   {
-    imageURL: 'https://1000logos.net/wp-content/uploads/2017/02/Instagram-Logo.png',
+    id: 3,
+    imageURL: 'https://picsum.photos/400/300?random=3',
     title: 'Insta',
     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     creator: 'Ethan',
@@ -28,7 +30,8 @@ export const MOCK_PROJ_LIST = [
     deadline: 600
   },
   {
-    imageURL: 'https://cdn-icons-png.flaticon.com/512/124/124010.png',
+    id: 4,
+    imageURL: 'https://picsum.photos/400/300?random=4',
     title: 'Facebook',
     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
     creator: 'Ethan',
@@ -37,7 +40,8 @@ export const MOCK_PROJ_LIST = [
     deadline: 100
   },
   {
-    imageURL: 'https://1000logos.net/wp-content/uploads/2017/02/Instagram-Logo.png',
+    id: 5,
+    imageURL: 'https://picsum.photos/400/300?random=5',
     title: 'Insta',
     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
     creator: 'Ethan',

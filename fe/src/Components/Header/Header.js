@@ -1,5 +1,14 @@
 import React from 'react';
-import { AppBar, Button, Grid, Toolbar, Typography } from '@mui/material';
+import {
+  AppBar,
+  Button,
+  createTheme,
+  Grid,
+  ThemeProvider,
+  Toolbar,
+  Typography
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useWeb3React } from '@web3-react/core';
 import { injected } from '../../Wallet/Connector';
 import { useUpdateEffect } from 'ahooks';
@@ -11,6 +20,11 @@ const Header = () => {
   // Activate- function called to authenticate wallet
   // Deactivate- logout
   const { active, account, library, activate, deactivate } = useWeb3React();
+  const navigate = useNavigate();
+
+  const directToPage = (link) => {
+    navigate('../' + link);
+  };
 
   async function connect() {
     try {
@@ -37,13 +51,24 @@ const Header = () => {
       <Toolbar>
         <Grid container>
           <Grid container item sm={4} justifyContent={'flex-start'}>
-            <Button color="secondary" sx={{ mr: 3 }}>
-              Start Project
+            <Button
+              size="small"
+              color="secondary"
+              sx={{ mr: 1 }}
+              onClick={() => directToPage('MyProject')}>
+              My Projects
             </Button>
-            <Button color="secondary">My Projects</Button>
+            <Button size="small" color="secondary">
+              Backed Projects
+            </Button>
           </Grid>
           <Grid container item sm={4} justifyContent="center">
-            <Typography variant="h5" color="secondary" component="div" sx={{ fontWeight: 'bold' }}>
+            <Typography
+              variant="h6"
+              color="secondary"
+              component="div"
+              sx={{ fontWeight: 'bold' }}
+              onClick={() => directToPage('/')}>
               QUICKSTARTER
             </Typography>
           </Grid>

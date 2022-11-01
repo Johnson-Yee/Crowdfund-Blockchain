@@ -1,11 +1,6 @@
-export const CROWDFUND_ADDRESS = '0x7a67D95CDDfeA292f202d9e55Bb321FDF8BE29b0';
+export const CROWDFUND_ADDRESS = '0x5249E44095173821Dc9eF64a91bF3973caf2561c';
 
 export const CROWDFUND_ABI = [
-  {
-    inputs: [{ internalType: 'address', name: '_token', type: 'address' }],
-    stateMutability: 'nonpayable',
-    type: 'constructor'
-  },
   {
     anonymous: false,
     inputs: [
@@ -44,8 +39,10 @@ export const CROWDFUND_ABI = [
       { indexed: false, internalType: 'uint256', name: 'id', type: 'uint256' },
       { indexed: false, internalType: 'address', name: 'creator', type: 'address' },
       { indexed: false, internalType: 'uint256', name: 'goal', type: 'uint256' },
+      { indexed: false, internalType: 'uint256', name: 'minContribution', type: 'uint256' },
       { indexed: false, internalType: 'uint256', name: 'startTime', type: 'uint256' },
-      { indexed: false, internalType: 'uint256', name: 'endTime', type: 'uint256' }
+      { indexed: false, internalType: 'uint256', name: 'endTime', type: 'uint256' },
+      { indexed: false, internalType: 'uint256', name: 'tier1Amount', type: 'uint256' }
     ],
     name: 'StartCampaign',
     type: 'event'
@@ -68,13 +65,10 @@ export const CROWDFUND_ABI = [
     type: 'function'
   },
   {
-    inputs: [
-      { internalType: 'uint256', name: '_id', type: 'uint256' },
-      { internalType: 'uint256', name: '_amount', type: 'uint256' }
-    ],
+    inputs: [{ internalType: 'uint256', name: '_id', type: 'uint256' }],
     name: 'donate',
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'payable',
     type: 'function'
   },
   {
@@ -85,15 +79,46 @@ export const CROWDFUND_ABI = [
     type: 'function'
   },
   {
+    inputs: [],
+    name: 'getAllCampaigns',
+    outputs: [
+      {
+        components: [
+          { internalType: 'address payable', name: 'creator', type: 'address' },
+          { internalType: 'uint256', name: 'minContribution', type: 'uint256' },
+          { internalType: 'uint256', name: 'currentAmount', type: 'uint256' },
+          { internalType: 'uint256', name: 'goal', type: 'uint256' },
+          { internalType: 'uint32', name: 'startTime', type: 'uint32' },
+          { internalType: 'uint32', name: 'endTime', type: 'uint32' },
+          { internalType: 'uint256', name: 'tier1Amount', type: 'uint256' },
+          { internalType: 'bool', name: 'claimed', type: 'bool' }
+        ],
+        internalType: 'struct Crowdfund.Campaign[]',
+        name: '',
+        type: 'tuple[]'
+      }
+    ],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: '_id', type: 'uint256' }],
+    name: 'getTierReward',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
     inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     name: 'ongoingCampaigns',
     outputs: [
-      { internalType: 'address', name: 'creator', type: 'address' },
+      { internalType: 'address payable', name: 'creator', type: 'address' },
       { internalType: 'uint256', name: 'minContribution', type: 'uint256' },
       { internalType: 'uint256', name: 'currentAmount', type: 'uint256' },
       { internalType: 'uint256', name: 'goal', type: 'uint256' },
       { internalType: 'uint32', name: 'startTime', type: 'uint32' },
       { internalType: 'uint32', name: 'endTime', type: 'uint32' },
+      { internalType: 'uint256', name: 'tier1Amount', type: 'uint256' },
       { internalType: 'bool', name: 'claimed', type: 'bool' }
     ],
     stateMutability: 'view',
@@ -103,7 +128,7 @@ export const CROWDFUND_ABI = [
     inputs: [{ internalType: 'uint256', name: '_id', type: 'uint256' }],
     name: 'payoutOnGoalMet',
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'payable',
     type: 'function'
   },
   {
@@ -125,20 +150,25 @@ export const CROWDFUND_ABI = [
   },
   {
     inputs: [
+      { internalType: 'uint256', name: '', type: 'uint256' },
+      { internalType: 'address', name: '', type: 'address' }
+    ],
+    name: 'rewarded',
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [
       { internalType: 'uint256', name: '_goal', type: 'uint256' },
+      { internalType: 'uint256', name: '_minContribution', type: 'uint256' },
       { internalType: 'uint32', name: '_startTime', type: 'uint32' },
-      { internalType: 'uint32', name: '_endTime', type: 'uint32' }
+      { internalType: 'uint32', name: '_endTime', type: 'uint32' },
+      { internalType: 'uint256', name: '_tier1Amount', type: 'uint256' }
     ],
     name: 'startCampaign',
     outputs: [],
     stateMutability: 'nonpayable',
-    type: 'function'
-  },
-  {
-    inputs: [],
-    name: 'token',
-    outputs: [{ internalType: 'contract IERC20', name: '', type: 'address' }],
-    stateMutability: 'view',
     type: 'function'
   },
   {
@@ -148,7 +178,7 @@ export const CROWDFUND_ABI = [
     ],
     name: 'withdraw',
     outputs: [],
-    stateMutability: 'nonpayable',
+    stateMutability: 'payable',
     type: 'function'
   }
 ];

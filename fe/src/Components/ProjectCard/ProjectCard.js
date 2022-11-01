@@ -7,15 +7,12 @@ import {
   Typography
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { Stack } from '@mui/system';
 import React from 'react';
 
 const ProjectCard = ({ id, imageURL, title, desc, amtPledged, percFunded, deadline, creator }) => {
-  console.log(id);
   const navigate = useNavigate();
 
   const directToProjectDetails = (id) => {
-    console.log(id);
     navigate('../' + 'ProjectDetails/' + id, { replace: false });
   };
 

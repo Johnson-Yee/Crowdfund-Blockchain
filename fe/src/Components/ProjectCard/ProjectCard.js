@@ -6,15 +6,28 @@ import {
   LinearProgress,
   Typography
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { Stack } from '@mui/system';
 import React from 'react';
 
-const ProjectCard = ({ imageURL, title, desc, amtPledged, percFunded, deadline, creator }) => {
+const ProjectCard = ({ id, imageURL, title, desc, amtPledged, percFunded, deadline, creator }) => {
+  console.log(id);
+  const navigate = useNavigate();
+
+  const directToProjectDetails = (id) => {
+    console.log(id);
+    navigate('../' + 'ProjectDetails/' + id, { replace: false });
+  };
+
   return (
-    <Card className="animate__animated animate__fadeIn" raised sx={{ height: '540px' }}>
+    <Card
+      className="animate__animated animate__fadeIn"
+      raised
+      sx={{ height: '540px' }}
+      onClick={() => directToProjectDetails(id)}>
       <CardActionArea sx={{ height: '100%' }}>
         <CardMedia
-          item
+          item="true"
           component="img"
           src={imageURL}
           sx={{ height: '55%', objectFit: 'contain' }}

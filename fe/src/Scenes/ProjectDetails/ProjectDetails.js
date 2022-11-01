@@ -2,32 +2,37 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Card,
-  CardActionArea,
   CardContent,
   CardMedia,
   LinearProgress,
   Typography,
   Box,
-  Container,
   Stack,
   Grid,
   Button
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { MOCK_PROJ_LIST } from '../../Constants/Mocks/MockProjList';
+import { useWeb3React } from '@web3-react/core';
 
 const ProjectDetails = () => {
   let { id } = useParams();
   const [projectdetail, setProjectdetail] = useState();
-  // obtain project detail
+  const [isOwnProject, setIsOwnProject] = useState();
+  const { active, account, library, activate, deactivate } = useWeb3React();
+
   useEffect(() => {
     // obtain project detail
-    const selectedProject = MOCK_PROJ_LIST.filter((project) => project.id === id);
+    console.log(MOCK_PROJ_LIST);
+    const selectedProject = MOCK_PROJ_LIST.filter((project) => project.id == id);
+    console.log(selectedProject);
     setProjectdetail(selectedProject);
   }, []);
 
-  console.log(id);
   console.log(projectdetail);
+  console.log(active);
+  console.log(account);
+
   return (
     <Grid container spacing={0} direction="column" alignItems="center" justify="center">
       <Card

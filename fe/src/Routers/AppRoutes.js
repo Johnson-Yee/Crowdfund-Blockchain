@@ -1,8 +1,7 @@
 import React from 'react';
 import { Container } from '@mui/system';
-import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Home, MyProject, ProjectDetails, StartProject } from '../Scenes/index';
-import Header from '../Components/Header/Header';
 
 const AppRoutes = () => {
   return (

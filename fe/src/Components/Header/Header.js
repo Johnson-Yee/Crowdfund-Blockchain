@@ -1,17 +1,9 @@
 import React from 'react';
-import {
-  AppBar,
-  Button,
-  createTheme,
-  Grid,
-  ThemeProvider,
-  Toolbar,
-  Typography
-} from '@mui/material';
+import { AppBar, Button, Grid, Toolbar, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useWeb3React } from '@web3-react/core';
 import { injected } from '../../Wallet/Connector';
-import { useUpdateEffect } from 'ahooks';
+// import { useUpdateEffect } from 'ahooks';
 
 const Header = () => {
   // Active- bool isWalletConnected

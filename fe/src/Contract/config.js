@@ -1,4 +1,4 @@
-export const CROWDFUND_ADDRESS = '0x5249E44095173821Dc9eF64a91bF3973caf2561c';
+export const CROWDFUND_ADDRESS = '0xD1d94C342EFc2D41416DbFf29BC255466Ea006F4';
 
 export const CROWDFUND_ABI = [
   {
@@ -38,11 +38,14 @@ export const CROWDFUND_ABI = [
     inputs: [
       { indexed: false, internalType: 'uint256', name: 'id', type: 'uint256' },
       { indexed: false, internalType: 'address', name: 'creator', type: 'address' },
+      { indexed: false, internalType: 'string', name: 'title', type: 'string' },
+      { indexed: false, internalType: 'string', name: 'description', type: 'string' },
+      { indexed: false, internalType: 'string', name: 'img_url', type: 'string' },
       { indexed: false, internalType: 'uint256', name: 'goal', type: 'uint256' },
+      { indexed: false, internalType: 'uint256', name: 'tier1Amount', type: 'uint256' },
       { indexed: false, internalType: 'uint256', name: 'minContribution', type: 'uint256' },
       { indexed: false, internalType: 'uint256', name: 'startTime', type: 'uint256' },
-      { indexed: false, internalType: 'uint256', name: 'endTime', type: 'uint256' },
-      { indexed: false, internalType: 'uint256', name: 'tier1Amount', type: 'uint256' }
+      { indexed: false, internalType: 'uint256', name: 'endTime', type: 'uint256' }
     ],
     name: 'StartCampaign',
     type: 'event'
@@ -85,12 +88,15 @@ export const CROWDFUND_ABI = [
       {
         components: [
           { internalType: 'address payable', name: 'creator', type: 'address' },
-          { internalType: 'uint256', name: 'minContribution', type: 'uint256' },
+          { internalType: 'string', name: 'title', type: 'string' },
+          { internalType: 'string', name: 'description', type: 'string' },
+          { internalType: 'string', name: 'img_url', type: 'string' },
           { internalType: 'uint256', name: 'currentAmount', type: 'uint256' },
           { internalType: 'uint256', name: 'goal', type: 'uint256' },
+          { internalType: 'uint256', name: 'minContribution', type: 'uint256' },
+          { internalType: 'uint256', name: 'tier1Amount', type: 'uint256' },
           { internalType: 'uint32', name: 'startTime', type: 'uint32' },
           { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-          { internalType: 'uint256', name: 'tier1Amount', type: 'uint256' },
           { internalType: 'bool', name: 'claimed', type: 'bool' }
         ],
         internalType: 'struct Crowdfund.Campaign[]',
@@ -113,12 +119,15 @@ export const CROWDFUND_ABI = [
     name: 'ongoingCampaigns',
     outputs: [
       { internalType: 'address payable', name: 'creator', type: 'address' },
-      { internalType: 'uint256', name: 'minContribution', type: 'uint256' },
+      { internalType: 'string', name: 'title', type: 'string' },
+      { internalType: 'string', name: 'description', type: 'string' },
+      { internalType: 'string', name: 'img_url', type: 'string' },
       { internalType: 'uint256', name: 'currentAmount', type: 'uint256' },
       { internalType: 'uint256', name: 'goal', type: 'uint256' },
+      { internalType: 'uint256', name: 'minContribution', type: 'uint256' },
+      { internalType: 'uint256', name: 'tier1Amount', type: 'uint256' },
       { internalType: 'uint32', name: 'startTime', type: 'uint32' },
       { internalType: 'uint32', name: 'endTime', type: 'uint32' },
-      { internalType: 'uint256', name: 'tier1Amount', type: 'uint256' },
       { internalType: 'bool', name: 'claimed', type: 'bool' }
     ],
     stateMutability: 'view',
@@ -160,11 +169,14 @@ export const CROWDFUND_ABI = [
   },
   {
     inputs: [
+      { internalType: 'string', name: '_title', type: 'string' },
+      { internalType: 'string', name: '_description', type: 'string' },
+      { internalType: 'string', name: '_img_url', type: 'string' },
       { internalType: 'uint256', name: '_goal', type: 'uint256' },
       { internalType: 'uint256', name: '_minContribution', type: 'uint256' },
+      { internalType: 'uint256', name: '_tier1Amount', type: 'uint256' },
       { internalType: 'uint32', name: '_startTime', type: 'uint32' },
-      { internalType: 'uint32', name: '_endTime', type: 'uint32' },
-      { internalType: 'uint256', name: '_tier1Amount', type: 'uint256' }
+      { internalType: 'uint32', name: '_endTime', type: 'uint32' }
     ],
     name: 'startCampaign',
     outputs: [],

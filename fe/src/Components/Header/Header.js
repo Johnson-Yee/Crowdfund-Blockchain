@@ -39,7 +39,7 @@ const Header = () => {
   const handleClickWallet = !active ? connect : disconnect;
 
   return (
-    <AppBar position="static" sx={{ marginBottom: 4, bgcolor: 'primary' }}>
+    <AppBar position="static" sx={{ marginBottom: 2, bgcolor: 'primary' }}>
       <Toolbar>
         <Grid container>
           <Grid container item sm={4} justifyContent={'flex-start'}>

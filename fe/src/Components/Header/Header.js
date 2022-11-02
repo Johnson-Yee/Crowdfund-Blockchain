@@ -43,15 +43,8 @@ const Header = () => {
       <Toolbar>
         <Grid container>
           <Grid container item sm={4} justifyContent={'flex-start'}>
-            <Button
-              size="small"
-              color="secondary"
-              sx={{ mr: 1 }}
-              onClick={() => directToPage('MyProject')}>
-              My Projects
-            </Button>
             <Button size="small" color="secondary">
-              Backed Projects
+              Create Projects
             </Button>
           </Grid>
           <Grid container item sm={4} justifyContent="center">
@@ -59,7 +52,7 @@ const Header = () => {
               variant="h6"
               color="secondary"
               component="div"
-              sx={{ fontWeight: 'bold' }}
+              sx={{ fontWeight: 'bold', cursor: 'pointer' }}
               onClick={() => directToPage('/')}>
               QUICKSTARTER
             </Typography>

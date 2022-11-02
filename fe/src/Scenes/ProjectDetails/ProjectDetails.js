@@ -14,12 +14,13 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import { MOCK_PROJ_LIST } from '../../Constants/Mocks/MockProjList';
 import { useWeb3React } from '@web3-react/core';
+import { injected } from '../../Wallet/Connector';
 
 const ProjectDetails = () => {
   let { id } = useParams();
   const [projectdetail, setProjectdetail] = useState([]);
   const [isOwnProject, setIsOwnProject] = useState();
-  const { active, account } = useWeb3React();
+  const { active, account, activate } = useWeb3React();
 
   useEffect(() => {
     // obtain project detail
@@ -47,16 +48,29 @@ const ProjectDetails = () => {
   console.log(active);
   console.log(account);
 
+  async function connect() {
+    try {
+      await activate(injected);
+      console.log('login>>>>>>>>>>>>>', account);
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+
   // if user not logged in, prompt to log in
   const NonLoggedUserInteraction = () => {
-    return <Button variant="contained">Connect Wallet to back campaigns</Button>;
+    return (
+      <Button variant="contained" onClick={() => connect()}>
+        Connect Wallet to back campaigns
+      </Button>
+    );
   };
 
   // need to check whether there is any fund to withdraw first
   const OwnerInteraction = () => {
     return (
       <React.Fragment>
-        <Button variant="contained">Scrap Project And Refund</Button>
+        <Button variant="contained">Scrap Project</Button>
         <Button variant="contained">Withdraw Funds to Own Account</Button>
       </React.Fragment>
     );

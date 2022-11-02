@@ -1,17 +1,9 @@
 import React from 'react';
-import {
-  AppBar,
-  Button,
-  createTheme,
-  Grid,
-  ThemeProvider,
-  Toolbar,
-  Typography
-} from '@mui/material';
+import { AppBar, Button, Grid, Toolbar, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useWeb3React } from '@web3-react/core';
 import { injected } from '../../Wallet/Connector';
-import { useUpdateEffect } from 'ahooks';
+// import { useUpdateEffect } from 'ahooks';
 
 const Header = () => {
   // Active- bool isWalletConnected
@@ -47,19 +39,12 @@ const Header = () => {
   const handleClickWallet = !active ? connect : disconnect;
 
   return (
-    <AppBar position="static" sx={{ marginBottom: 4, bgcolor: 'primary' }}>
+    <AppBar position="static" sx={{ marginBottom: 2, bgcolor: 'primary' }}>
       <Toolbar>
         <Grid container>
           <Grid container item sm={4} justifyContent={'flex-start'}>
-            <Button
-              size="small"
-              color="secondary"
-              sx={{ mr: 1 }}
-              onClick={() => directToPage('MyProject')}>
-              My Projects
-            </Button>
             <Button size="small" color="secondary">
-              Backed Projects
+              Create Projects
             </Button>
           </Grid>
           <Grid container item sm={4} justifyContent="center">
@@ -67,7 +52,7 @@ const Header = () => {
               variant="h6"
               color="secondary"
               component="div"
-              sx={{ fontWeight: 'bold' }}
+              sx={{ fontWeight: 'bold', cursor: 'pointer' }}
               onClick={() => directToPage('/')}>
               QUICKSTARTER
             </Typography>

@@ -4,7 +4,7 @@ export const MOCK_PROJ_LIST = [
     imageURL: 'https://picsum.photos/400/300?random=1',
     title: 'Spotify',
     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
-    creator: 'Ethan',
+    creator: 'WenFeng',
     percFunded: 50,
     amtPledged: 500,
     deadline: 20
@@ -14,7 +14,7 @@ export const MOCK_PROJ_LIST = [
     imageURL: 'https://picsum.photos/400/300?random=2',
     title: 'Facebook',
     desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    creator: 'Ethan',
+    creator: 'WenFeng',
     percFunded: 60,
     amtPledged: 1000,
     deadline: 1000

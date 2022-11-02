@@ -4,13 +4,14 @@ import ProjectCardGrid from '../../Components/ProjectCardGrid/ProjectCardGrid';
 import { MOCK_PROJ_LIST } from '../../Constants/Mocks/MockProjList';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCampaigns } from './Redux/HomeSlice';
-import { allCampaignsSelector } from './Redux/Selector';
+import { allCampaignsSelector, selectCampaigns } from './Redux/Selector';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { filter } from 'lodash';
 
 const Home = () => {
   const dispatch = useDispatch();
   const allCampaigns = useSelector(allCampaignsSelector);
+  const filteredCampaigns = useSelector(selectCampaigns);
   const [filterApplied, setFilterApplied] = useState('allprojects');
 
   const handleFilterChange = (event, newFilter) => {
@@ -22,6 +23,10 @@ const Home = () => {
   useEffect(() => {
     console.log(allCampaigns);
   }, [allCampaigns]);
+
+  useEffect(() => {
+    console.log(filteredCampaigns);
+  }, [filteredCampaigns]);
 
   return (
     <>

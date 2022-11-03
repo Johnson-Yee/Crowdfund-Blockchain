@@ -9,6 +9,7 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/Home" element={<Home />} />
         <Route path="/ProjectDetails/:id" element={<ProjectDetails />} />
+        <Route path="/StartCampaign" element={<StartProject />} />
         <Route path="*" element={<Navigate replace to="/Home" />} />
         {/* force rerouting to homepage */}
       </Routes>

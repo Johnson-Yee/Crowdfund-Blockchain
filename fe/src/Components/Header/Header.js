@@ -11,7 +11,7 @@ const Header = () => {
   // Library- web3React functions
   // Activate- function called to authenticate wallet
   // Deactivate- logout
-  const { active, account, library, activate, deactivate } = useWeb3React();
+  const { active, account, activate, deactivate } = useWeb3React();
   const navigate = useNavigate();
 
   const directToPage = (link) => {

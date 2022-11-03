@@ -1,8 +1,7 @@
 import React from 'react';
 import { Container } from '@mui/system';
-import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { Home, MyProject, ProjectDetails, StartProject } from '../Scenes/index';
-import Header from '../Components/Header/Header';
 
 const AppRoutes = () => {
   return (
@@ -10,7 +9,6 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/Home" element={<Home />} />
         <Route path="/ProjectDetails/:id" element={<ProjectDetails />} />
-        <Route path="/MyProject" element={<MyProject />} />
         <Route path="/StartCampaign" element={<StartProject />} />
         <Route path="*" element={<Navigate replace to="/Home" />} />
         {/* force rerouting to homepage */}

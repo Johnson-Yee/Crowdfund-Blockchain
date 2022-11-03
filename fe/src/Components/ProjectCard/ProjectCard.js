@@ -25,7 +25,6 @@ const ProjectCard = ({
   const navigate = useNavigate();
 
   const directToProjectDetails = (id) => {
-    console.log(id);
     navigate('../' + 'ProjectDetails/' + id, { replace: false });
   };
 

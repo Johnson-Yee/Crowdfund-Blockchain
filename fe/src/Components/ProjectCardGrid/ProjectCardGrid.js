@@ -3,9 +3,9 @@ import React from 'react';
 import ProjectCard from '../ProjectCard/ProjectCard';
 
 const ProjectCardGrid = ({ projectList }) => {
-  const projectToCard = (project) => {
+  const projectToCard = (project, index) => {
     return (
-      <Grid item sm={4} xs={12}>
+      <Grid key={index} item sm={4} xs={12}>
         <ProjectCard {...project} />
       </Grid>
     );
@@ -13,8 +13,8 @@ const ProjectCardGrid = ({ projectList }) => {
   return (
     <>
       <Grid container spacing={4}>
-        {projectList.map((project) => {
-          return projectToCard(project);
+        {projectList.map((project, index) => {
+          return projectToCard(project, index);
         })}
       </Grid>
     </>

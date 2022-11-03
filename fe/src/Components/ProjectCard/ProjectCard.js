@@ -23,7 +23,7 @@ const ProjectCard = ({
   clickable = true
 }) => {
   console.log(id);
-  const percentageFunded = Math.round((currAmt / goal) * 100) / 10;
+  const percentageFunded = currAmt ? Math.round((currAmt / goal) * 100) / 10 : 0;
   const navigate = useNavigate();
 
   const directToProjectDetails = (id) => {

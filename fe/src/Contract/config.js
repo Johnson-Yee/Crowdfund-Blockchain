@@ -1,4 +1,4 @@
-export const CROWDFUND_ADDRESS = '0xD1d94C342EFc2D41416DbFf29BC255466Ea006F4';
+export const CROWDFUND_ADDRESS = '0xC80dD81c1F870b22bB6A3B6aA429AC528F4Fd5ea';
 
 export const CROWDFUND_ABI = [
   {
@@ -155,6 +155,20 @@ export const CROWDFUND_ABI = [
     name: 'reimburse',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'retrieveAllBackedCampaigns',
+    outputs: [{ internalType: 'uint256[]', name: '', type: 'uint256[]' }],
+    stateMutability: 'view',
+    type: 'function'
+  },
+  {
+    inputs: [],
+    name: 'retrieveAllCreatedCampaigns',
+    outputs: [{ internalType: 'uint256[]', name: '', type: 'uint256[]' }],
+    stateMutability: 'view',
     type: 'function'
   },
   {

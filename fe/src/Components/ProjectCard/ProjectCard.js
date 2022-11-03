@@ -12,16 +12,18 @@ import React, { useEffect } from 'react';
 
 const ProjectCard = ({
   id,
-  imageURL,
   title,
   desc,
-  amtPledged,
-  percFunded,
+  imageURL,
+  currAmt,
+  goal,
+  startTime,
   deadline,
-  creator,
+  claimed,
   clickable = true
 }) => {
   console.log(id);
+  const percentageFunded = Math.round((currAmt / goal) * 100) / 10;
   const navigate = useNavigate();
 
   const directToProjectDetails = (id) => {
@@ -31,6 +33,15 @@ const ProjectCard = ({
   useEffect(() => {
     console.log(imageURL);
   }, [imageURL]);
+
+  const deadlineField = () => {
+    const now = new Date().getTime() / 1000;
+    if (now <= startTime) {
+      return `Starts on ...!`;
+    } else if (now >= deadline) {
+      return `Ended!`;
+    } else return `... days left`;
+  };
 
   return (
     <Card
@@ -61,20 +72,22 @@ const ProjectCard = ({
             sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {desc}
           </Typography>
-          <Typography
+          {/* <Typography
             gutterBottom
             variant="subtitle1"
             color="text.secondary"
             sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
             By: {creator}
-          </Typography>
-          <LinearProgress variant="determinate" value={percFunded} />
+          </Typography> */}
+          <LinearProgress variant="determinate" value={percentageFunded} />
           <Typography variant="subtitle1" color="text.secondary">
-            {percFunded}% funded
+            {percentageFunded}% funded
             <br />
-            {amtPledged} ETH pledged
+            Goal: {goal} Wei
             <br />
-            {deadline} days to go
+            Pledged: {currAmt} Wei
+            <br />
+            {deadlineField()}
           </Typography>
         </CardContent>
       </CardActionArea>

@@ -1,27 +1,24 @@
 import { Container, Grid, Typography } from '@mui/material';
+import { useWeb3React } from '@web3-react/core';
 import { isEmpty } from 'lodash';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import ProjectCard from '../../Components/ProjectCard/ProjectCard';
 import CreateProjectForm from './Container/Form/CreateProjectForm';
+import { campaignInfoSelector } from './Redux/Selector';
 
 const StartProject = () => {
-  const [title, setTitle] = useState('');
-  const [desc, setDesc] = useState('');
-  const [amt, setAmt] = useState(0);
-  const [deadline, setDeadline] = useState(0);
+  const projectInfo = useSelector(campaignInfoSelector);
+  const { desc, endDate, goal, imageURL, minCon, startDate, title } = projectInfo;
+  const { account } = useWeb3React();
 
-  const isTitleValid = () => {
-    return !isEmpty(title);
-  };
-  const isDescValid = () => {
-    return !isEmpty(desc);
-  };
-  const isAmtValid = () => {
-    return amt % 1 == 0 && amt > 100;
-  };
+  // useEffect(() => {
+  //   console.log(projectInfo);
+  // }, [projectInfo]);
 
   const isInputValid = () => {
-    return isTitleValid && isDescValid && isAmtValid;
+    // return isTitleValid && isDescValid && isAmtValid;
+    return true;
   };
 
   return (
@@ -33,14 +30,15 @@ const StartProject = () => {
         <Grid container item sm={3}>
           <ProjectCard
             {...{
-              imageURL:
-                'https://play-lh.googleusercontent.com/UrY7BAZ-XfXGpfkeWg0zCCeo-7ras4DCoRalC_WXXWTK9q5b0Iw7B0YQMsVxZaNB7DM',
-              title: 'Spotify',
-              desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
-              creator: 'Ethan',
-              percFunded: 50,
-              amtPledged: 500,
-              deadline: 20
+              imageURL: imageURL,
+
+              title: isEmpty(title) ? 'Title' : title,
+              desc: isEmpty(desc) ? 'Description' : desc,
+              creator: isEmpty(account) ? 'Creator' : account,
+              percFunded: 0,
+              amtPledged: 0,
+              deadline: 20,
+              clickable: false
             }}
           />
         </Grid>

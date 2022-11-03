@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT 
+ // SPDX-License-Identifier: MIT 
 
 pragma solidity ^0.8.0;
 
@@ -136,6 +136,19 @@ contract Crowdfund {
         reimbursee.transfer(bal);
         emit Reimburse(_id, msg.sender, bal);
     }
+    // Allows donor to view all campaigns he has donated to
+    function retrieveAllBackedCampaigns() public view returns(uint[] memory) {
+        uint num = 0;
+        uint[] memory backedCampaign = new uint[](campaignCount);
+        for (uint i = 1; i<=campaignCount; i++){
+            if (potentialDonations[i][msg.sender] == 0) {
+                continue;
+            }
+            backedCampaign[num++] = i;
+        }
+        return backedCampaign;
+    }
+
 
     function getAllCampaigns() public view returns (Campaign[] memory){
         Campaign[] memory allCampaigns = new Campaign[](campaignCount);

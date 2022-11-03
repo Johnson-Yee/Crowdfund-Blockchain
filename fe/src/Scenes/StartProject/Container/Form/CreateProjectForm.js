@@ -95,6 +95,12 @@ const CreateProjectForm = () => {
   };
 
   const onSubmitClick = () => {
+    const today = new Date().setHours(0, 0, 0, 0) / 1000;
+    if (startDate == today) {
+      const newStart = new Date();
+      newStart.setMinutes(newStart.getMinutes() + 5);
+      dispatch(setStartDate(Math.round(newStart / 1000)));
+    }
     dispatch(createCampaign());
   };
 

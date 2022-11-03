@@ -31,13 +31,12 @@ const StartProject = () => {
           <ProjectCard
             {...{
               imageURL: imageURL,
-
               title: isEmpty(title) ? 'Title' : title,
               desc: isEmpty(desc) ? 'Description' : desc,
               creator: isEmpty(account) ? 'Creator' : account,
-              percFunded: 0,
-              amtPledged: 0,
-              deadline: 20,
+              currAmt: 0,
+              goal: goal,
+              deadline: endDate,
               clickable: false
             }}
           />

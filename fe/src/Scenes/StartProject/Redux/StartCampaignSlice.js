@@ -20,7 +20,7 @@ export const createCampaign = createAsyncThunk(
       );
       return res;
     } catch (err) {
-      return rejectWithValue('Transaction was not completed');
+      return rejectWithValue(err);
     }
   }
 );

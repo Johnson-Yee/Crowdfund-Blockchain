@@ -20,7 +20,7 @@ export const createCampaign = createAsyncThunk(
       );
       return res;
     } catch (err) {
-      return rejectWithValue('Transaction was not completed');
+      return rejectWithValue(err);
     }
   }
 );
@@ -43,28 +43,28 @@ const StartCampaignSlice = createSlice({
   name: 'StartProject',
   initialState,
   reducers: {
-    setImageURL: (state, { payload }) => {
+    setImageURL(state, { payload }) {
       state.campaignInfo.imageURL = payload;
     },
-    setTitle: (state, { payload }) => {
+    setTitle(state, { payload }) {
       state.campaignInfo.title = payload;
     },
-    setDesc: (state, { payload }) => {
+    setDesc(state, { payload }) {
       state.campaignInfo.desc = payload;
     },
-    setGoal: (state, { payload }) => {
+    setGoal(state, { payload }) {
       state.campaignInfo.goal = payload;
     },
-    setMinCon: (state, { payload }) => {
+    setMinCon(state, { payload }) {
       state.campaignInfo.minCon = payload;
     },
-    setStartDate: (state, { payload }) => {
+    setStartDate(state, { payload }) {
       state.campaignInfo.startDate = payload;
     },
-    setEndDate: (state, { payload }) => {
+    setEndDate(state, { payload }) {
       state.campaignInfo.endDate = payload;
     },
-    clearFields: (state) => {
+    clearFields(state) {
       state.campaignInfo = initialState;
     }
   },

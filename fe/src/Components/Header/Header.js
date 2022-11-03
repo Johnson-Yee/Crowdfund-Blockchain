@@ -43,7 +43,7 @@ const Header = () => {
       <Toolbar>
         <Grid container>
           <Grid container item sm={4} justifyContent={'flex-start'}>
-            <Button size="small" color="secondary">
+            <Button size="small" color="secondary" onClick={() => directToPage('/StartCampaign')}>
               Create Projects
             </Button>
           </Grid>

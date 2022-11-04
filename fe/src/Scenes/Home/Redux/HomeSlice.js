@@ -26,7 +26,7 @@ export const getBackedCampaignIds = createAsyncThunk(
 const parseCampaigns = (campaigns) => {
   return map(campaigns, (c, index) => {
     return {
-      id: index,
+      id: index + 1,
       creator: c[0],
       title: c[1],
       desc: c[2],

@@ -6,30 +6,52 @@ import AppRoutes from './Routers/AppRoutes';
 import { ThemeProvider } from '@mui/system';
 import Theme from './Themes/Theme';
 import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import store from './reducer/store';
-import { Web3ReactProvider } from '@web3-react/core';
-import { Web3Provider } from '@ethersproject/providers';
+import { useDispatch, useSelector } from 'react-redux';
+import { Alert, Snackbar } from '@mui/material';
+import {
+  closeNotification,
+  notificationMessageSelector,
+  notificationOpenSelector,
+  notificationSuccessSelector
+} from './AppSlice';
 
 function App() {
-  function getLibrary(provider) {
-    return new Web3Provider(provider);
-  }
+  const dispatch = useDispatch();
+  // Selectors
+  const notificationMessage = useSelector(notificationMessageSelector);
+  const notificationSuccess = useSelector(notificationSuccessSelector);
+  const notificationOpen = useSelector(notificationOpenSelector);
+
+  const handleClose = () => {
+    dispatch(closeNotification());
+  };
+
+  const renderNotification = () => {
+    const severity = notificationSuccess ? 'success' : 'error';
+    return (
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={notificationOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}>
+        <Alert severity={severity} sx={{ width: '100%' }}>
+          {notificationMessage}
+        </Alert>
+      </Snackbar>
+    );
+  };
 
   return (
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <Provider store={store}>
-        <ThemeProvider theme={Theme}>
-          <BrowserRouter>
-            <div className="App">
-              <Header />
-              <AppRoutes />
-              <Footer />
-            </div>
-          </BrowserRouter>
-        </ThemeProvider>
-      </Provider>
-    </Web3ReactProvider>
+    <ThemeProvider theme={Theme}>
+      <BrowserRouter>
+        <div className="App">
+          <Header />
+          <AppRoutes />
+          <Footer />
+          {renderNotification()}
+        </div>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

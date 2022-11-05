@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { backedCampaignABI, getAllCampaignsABI } from '../../../Contract/contract';
-import { map } from 'lodash';
+import { map, reduce } from 'lodash';
 import { statusCheck } from '../../../Utils/dateParser';
 export const getCampaigns = createAsyncThunk(
   'Home/getCampaigns',
@@ -25,23 +25,29 @@ export const getBackedCampaignIds = createAsyncThunk(
 );
 
 const parseCampaigns = (campaigns) => {
-  return map(campaigns, (c, index) => {
-    return {
-      id: index + 1,
-      status: statusCheck(c[8], c[9]),
-      creator: c[0],
-      title: c[1],
-      desc: c[2],
-      imageURL: c[3],
-      currAmt: c[4],
-      goal: c[5],
-      minCon: c[6],
-      tier1Amt: c[7],
-      startTime: c[8],
-      deadline: c[9],
-      claimed: c[10]
-    };
-  });
+  return reduce(
+    campaigns,
+    (filter, c, index) => {
+      if (c[0] !== 0)
+        filter.push({
+          id: index + 1,
+          status: statusCheck(c[8], c[9]),
+          creator: c[0],
+          title: c[1],
+          desc: c[2],
+          imageURL: c[3],
+          currAmt: c[4] / 10 ** 18,
+          goal: c[5],
+          minCon: c[6],
+          tier1Amt: c[7],
+          startTime: c[8],
+          deadline: c[9],
+          claimed: c[10]
+        });
+      return filter;
+    },
+    []
+  ).reverse();
 };
 const initialState = {
   userAddress: '',
@@ -58,6 +64,9 @@ const HomeSlice = createSlice({
   reducers: {
     setUserAddress(state, { payload }) {
       state.userAddress = payload;
+    },
+    clearBackedID(state) {
+      state.backedCampaignIds = [];
     }
   },
   extraReducers: {
@@ -89,6 +98,6 @@ const HomeSlice = createSlice({
     }
   }
 });
-export const { setUserAddress } = HomeSlice.actions;
+export const { setUserAddress, clearBackedID } = HomeSlice.actions;
 
 export default HomeSlice.reducer;

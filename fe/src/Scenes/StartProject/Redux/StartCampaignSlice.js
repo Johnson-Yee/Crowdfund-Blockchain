@@ -22,6 +22,7 @@ export const createCampaign = createAsyncThunk(
       dispatch(setNotification({ isSuccess: true, message: 'Campaign Created!' }));
       return res;
     } catch (err) {
+      dispatch(setNotification({ isSuccess: false, message: 'Error in Creation!' }));
       return rejectWithValue(err);
     }
   }

@@ -3,15 +3,23 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
+  Chip,
   LinearProgress,
   Typography
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Stack } from '@mui/system';
 import React, { useEffect } from 'react';
+import { statusCheck, timeLeft } from '../../Utils/dateParser';
+import {
+  ENDED_CAMPAIGN,
+  ONGOING_CAMPAIGN,
+  STARTING_CAMPAIGN
+} from '../../Constants/CampaignStatus';
 
 const ProjectCard = ({
   id,
+  status,
   title,
   desc,
   imageURL,
@@ -37,11 +45,14 @@ const ProjectCard = ({
   const deadlineField = () => {
     const now = new Date().getTime() / 1000;
     if (now <= startTime) {
-      return `Starts on ...!`;
+      const t = new Date(startTime * 1000).toLocaleDateString();
+      return `Starts on ${t}!`;
     } else if (now >= deadline) {
       return `Ended!`;
-    } else return `... days left`;
+    } else return `Ends on ${new Date(deadline * 1000).toLocaleDateString()} `;
   };
+  const statusChipColor =
+    status == ONGOING_CAMPAIGN ? 'success' : status == STARTING_CAMPAIGN ? 'warning' : 'error';
 
   return (
     <Card
@@ -61,9 +72,12 @@ const ProjectCard = ({
           sx={{ height: '55%', objectFit: 'contain' }}
         />
         <CardContent sx={{ textAlign: 'left', bgcolor: '#D9D9D9', height: '45%' }}>
-          <Typography gutterBottom variant="h6" noWrap height="15%">
-            {title}
-          </Typography>
+          <Stack direction="row" spacing={1}>
+            <Typography gutterBottom variant="h6" noWrap height="15%">
+              {title}
+            </Typography>
+            <Chip label={status} color={statusChipColor} />
+          </Stack>
           <Typography
             gutterBottom
             variant="body2"
@@ -83,9 +97,9 @@ const ProjectCard = ({
           <Typography variant="subtitle1" color="text.secondary">
             {percentageFunded}% funded
             <br />
-            Goal: {goal} Wei
+            Goal: {goal} ETH
             <br />
-            Pledged: {currAmt} Wei
+            Pledged: {currAmt} ETH
             <br />
             {deadlineField()}
           </Typography>

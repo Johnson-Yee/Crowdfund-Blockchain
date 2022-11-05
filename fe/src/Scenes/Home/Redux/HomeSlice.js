@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { backedCampaignABI, getAllCampaignsABI } from '../../../Contract/contract';
 import { map } from 'lodash';
+import { statusCheck } from '../../../Utils/dateParser';
 export const getCampaigns = createAsyncThunk(
   'Home/getCampaigns',
   async (arg, { rejectWithValue }) => {
@@ -26,7 +27,8 @@ export const getBackedCampaignIds = createAsyncThunk(
 const parseCampaigns = (campaigns) => {
   return map(campaigns, (c, index) => {
     return {
-      id: index,
+      id: index + 1,
+      status: statusCheck(c[8], c[9]),
       creator: c[0],
       title: c[1],
       desc: c[2],

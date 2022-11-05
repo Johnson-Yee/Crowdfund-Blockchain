@@ -3,7 +3,12 @@ import React, { useEffect, useState } from 'react';
 import ProjectCardGrid from '../../Components/ProjectCardGrid/ProjectCardGrid';
 import { MOCK_PROJ_LIST } from '../../Constants/Mocks/MockProjList';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBackedCampaignIds, getCampaigns, setUserAddress } from './Redux/HomeSlice';
+import {
+  clearBackedID,
+  getBackedCampaignIds,
+  getCampaigns,
+  setUserAddress
+} from './Redux/HomeSlice';
 import {
   allCampaignsSelector,
   myCampaignsSelector,
@@ -57,12 +62,12 @@ const Home = () => {
   useMount(() => dispatch(getCampaigns()));
   useEffect(() => {
     dispatch(setUserAddress(account));
-    dispatch(getBackedCampaignIds());
+    if (account) dispatch(getBackedCampaignIds());
+    else dispatch(clearBackedID());
   }, [account]);
 
   // Event Handler
   const handleFilterChange = (event, newFilter) => {
-    console.log('ethan>>>>>>>>', newFilter);
     if (!newFilter) newFilter = ALL_CAMPAIGNS;
     setFilterApplied(newFilter);
   };

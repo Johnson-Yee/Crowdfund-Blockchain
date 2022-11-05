@@ -9,16 +9,17 @@ const campaignsSelector = (state) => state.home.allCampaigns;
 
 export const allCampaignsSelector = createSelector(homeSelector, (state) => state.allCampaigns);
 export const userAddressSelector = createSelector(homeSelector, (state) => state.userAddress);
-export const backedCampaignIdsSelector = createSelector(homeSelector, (state) =>
-  reduce(
-    state.supportedCampaignIds,
+export const backedCampaignIdsSelector = createSelector(homeSelector, (state) => {
+  return reduce(
+    state.backedCampaignIds,
     (filtered, id) => {
       id = parseInt(id);
       if (id > 0) filtered.push(id);
+      return filtered;
     },
     []
-  )
-);
+  );
+});
 export const myCampaignsSelector = createSelector(
   campaignsSelector,
   userAddressSelector,
@@ -30,6 +31,6 @@ export const backedCampaignsSelector = createSelector(
   backedCampaignIdsSelector,
   (items, ids) => {
     console.log('supported:', ids);
-    map(ids, (id) => items[id - 1]);
+    return map(ids, (id) => items[items.length - id - 1]);
   }
 );

@@ -1,0 +1,3 @@
+export const ONGOING_CAMPAIGN = 'ONGOING';
+export const ENDED_CAMPAIGN = 'ENDED';
+export const STARTING_CAMPAIGN = 'STARTING';

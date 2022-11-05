@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ProjectCard from '../../Components/ProjectCard/ProjectCard';
+import { statusCheck } from '../../Utils/dateParser';
 import CreateProjectForm from './Container/Form/CreateProjectForm';
 import { campaignInfoSelector } from './Redux/Selector';
 
@@ -31,6 +32,7 @@ const StartProject = () => {
           <ProjectCard
             {...{
               imageURL: imageURL,
+              status: statusCheck(startDate, endDate),
               title: isEmpty(title) ? 'Title' : title,
               desc: isEmpty(desc) ? 'Description' : desc,
               creator: isEmpty(account) ? 'Creator' : account,

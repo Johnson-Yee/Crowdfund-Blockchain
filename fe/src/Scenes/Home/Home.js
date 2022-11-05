@@ -50,7 +50,7 @@ const Home = () => {
   const renderCampaigns = () => {
     const campaigns = selectCampaigns();
     if (statusFilter == ALL_STATUS) return campaigns;
-    return campaigns.filter((c) => c.status == statusFilter);
+    return campaigns?.filter((c) => c.status == statusFilter);
   };
 
   // Hooks

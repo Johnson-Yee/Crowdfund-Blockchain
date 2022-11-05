@@ -97,9 +97,9 @@ const ProjectCard = ({
           <Typography variant="subtitle1" color="text.secondary">
             {percentageFunded}% funded
             <br />
-            Goal: {goal} Wei
+            Goal: {goal} ETH
             <br />
-            Pledged: {currAmt} Wei
+            Pledged: {currAmt} ETH
             <br />
             {deadlineField()}
           </Typography>

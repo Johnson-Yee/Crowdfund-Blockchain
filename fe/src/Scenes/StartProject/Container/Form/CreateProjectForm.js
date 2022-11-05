@@ -145,23 +145,23 @@ const CreateProjectForm = () => {
           />
         </Grid>
         <Grid container item>
-          <Typography variant="h2">Amount Required (wei)</Typography>
+          <Typography variant="h2">Amount Required (ETH)</Typography>
           <TextField
             fullWidth
             id="amt-required"
             required
-            placeholder="Goal amount (wei)"
+            placeholder="Goal amount (ETH)"
             type="number"
             onChange={goalChangeHandler}
           />
         </Grid>
         <Grid container item>
-          <Typography variant="h2">Minimum donation (wei)</Typography>
+          <Typography variant="h2">Minimum donation (ETH)</Typography>
           <TextField
             fullWidth
             id="min-donation"
             required
-            placeholder="Goal amount (wei)"
+            placeholder="Goal amount (ETH)"
             type="number"
             onChange={minConChangeHandler}
           />

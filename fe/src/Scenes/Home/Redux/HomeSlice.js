@@ -41,7 +41,7 @@ const parseCampaigns = (campaigns) => {
       deadline: c[9],
       claimed: c[10]
     };
-  });
+  }).reverse();
 };
 const initialState = {
   userAddress: '',

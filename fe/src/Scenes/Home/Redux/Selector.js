@@ -9,6 +9,7 @@ const campaignsSelector = (state) => state.home.allCampaigns;
 
 export const allCampaignsSelector = createSelector(homeSelector, (state) => state.allCampaigns);
 export const userAddressSelector = createSelector(homeSelector, (state) => state.userAddress);
+export const isLoadingSelector = createSelector(homeSelector, (state) => state.loading);
 export const backedCampaignIdsSelector = createSelector(homeSelector, (state) => {
   return reduce(
     state.backedCampaignIds,

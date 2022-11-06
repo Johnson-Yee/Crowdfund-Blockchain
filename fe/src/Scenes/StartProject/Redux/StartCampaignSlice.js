@@ -19,6 +19,7 @@ export const createCampaign = createAsyncThunk(
         startDate,
         endDate
       );
+      dispatch(clearFields());
       dispatch(setNotification({ isSuccess: true, message: 'Campaign Created!' }));
       return res;
     } catch (err) {

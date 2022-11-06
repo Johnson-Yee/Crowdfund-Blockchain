@@ -12,15 +12,17 @@ import {
 import {
   allCampaignsSelector,
   myCampaignsSelector,
-  backedCampaignsSelector
+  backedCampaignsSelector,
+  isLoadingSelector
 } from './Redux/Selector';
-import { Box, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Box, CircularProgress, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useWeb3React } from '@web3-react/core';
 import {
   ENDED_CAMPAIGN,
   ONGOING_CAMPAIGN,
   STARTING_CAMPAIGN
 } from '../../Constants/CampaignStatus';
+import { Container } from '@mui/system';
 
 const ALL_CAMPAIGNS = 'All Campaigns';
 const MY_CAMPAIGNS = 'My Campaigns';
@@ -33,6 +35,7 @@ const Home = () => {
   const allCampaigns = useSelector(allCampaignsSelector);
   const myCampaigns = useSelector(myCampaignsSelector);
   const backedCampaigns = useSelector(backedCampaignsSelector);
+  const campaignLoading = useSelector(isLoadingSelector);
   const { account } = useWeb3React();
   // Local state
   const [filterApplied, setFilterApplied] = useState(ALL_CAMPAIGNS);
@@ -117,7 +120,15 @@ const Home = () => {
           Ended
         </ToggleButton>
       </ToggleButtonGroup>
-      {renderCampaigns() ? <ProjectCardGrid projectList={renderCampaigns()} /> : <></>}
+      {campaignLoading.allCampaigns ? (
+        <Container>
+          <CircularProgress />
+        </Container>
+      ) : renderCampaigns() ? (
+        <ProjectCardGrid projectList={renderCampaigns()} />
+      ) : (
+        <></>
+      )}
     </>
   );
 };

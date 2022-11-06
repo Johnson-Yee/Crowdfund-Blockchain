@@ -12,6 +12,7 @@ import { useWeb3React } from '@web3-react/core';
 import { isEmpty } from 'lodash';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { startCampaignABI } from '../../../../Contract/contract';
 import { campaignInfoSelector, StartCampaignSelector } from '../../Redux/Selector';
 import {
@@ -33,6 +34,7 @@ const CreateProjectForm = () => {
   const { loading, error } = useSelector(StartCampaignSelector);
   const { desc, endDate, goal, imageURL, minCon, startDate, title } = projectInfo;
   const { account } = useWeb3React();
+  const navigate = useNavigate();
 
   // Input validators
   const isMinConValid = minCon < goal;
@@ -94,7 +96,9 @@ const CreateProjectForm = () => {
       newStart.setMinutes(newStart.getMinutes() + 5);
       dispatch(setStartDate(Math.round(newStart / 1000)));
     }
-    dispatch(createCampaign());
+    dispatch(createCampaign()).then(({ error }) => {
+      if (!error) navigate('/', { replace: true });
+    });
   };
 
   return (

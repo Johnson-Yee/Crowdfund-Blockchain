@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 import Web3 from 'web3';
 import { getUserAddress } from '../../../Contract/contract';
-import { reduce, map } from 'lodash';
+import { reduce, map, find } from 'lodash';
 
 const homeSelector = (state) => state.home;
 const campaignsSelector = (state) => state.home.allCampaigns;
@@ -31,6 +31,6 @@ export const backedCampaignsSelector = createSelector(
   backedCampaignIdsSelector,
   (items, ids) => {
     console.log('supported:', ids);
-    return map(ids, (id) => items[items.length - id]);
+    return map(ids, (id) => find(items, { id: id })).reverse();
   }
 );

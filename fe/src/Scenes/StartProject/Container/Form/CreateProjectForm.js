@@ -95,6 +95,10 @@ const CreateProjectForm = () => {
       const newStart = new Date();
       newStart.setMinutes(newStart.getMinutes() + 5);
       dispatch(setStartDate(Math.round(newStart / 1000)));
+      // testing purpose. Creating campaigns that end in 5 min after starting
+      // const newEnd = new Date();
+      // newEnd.setMinutes(newStart.getMinutes() + 3);
+      // dispatch(setEndDate(Math.round(newEnd / 1000)));
     }
     dispatch(createCampaign()).then(({ error }) => {
       if (!error) navigate('/', { replace: true });

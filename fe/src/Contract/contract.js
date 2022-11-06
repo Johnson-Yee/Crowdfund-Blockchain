@@ -52,7 +52,8 @@ export const withdrawDonatedAmountABI = async (campaignId, amountInWei) => {
 };
 
 export const refundToDonersABI = async (campaignId) => {
-  return crowdFund.methods.reimburse(campaignId).call();
+  const account = await getUserAddress();
+  return crowdFund.methods.reimburse(campaignId).send({ from: account[0] });
 };
 
 export const withDrawFundToOwnAccountABI = async (amount, campaignId) => {

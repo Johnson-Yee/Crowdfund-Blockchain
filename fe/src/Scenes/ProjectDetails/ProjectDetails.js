@@ -77,7 +77,7 @@ const ProjectDetails = () => {
     const currentAmount = parseInt(selectedCampaign.currentAmount);
     const goalAmount = parseInt(selectedCampaign.goal);
     console.log(currentAmount > goalAmount);
-    if (currentAmount > goalAmount) {
+    if (currentAmount >= goalAmount) {
       setReimburseAllow(true);
     } else {
       setReimburseAllow(false);
@@ -149,8 +149,9 @@ const ProjectDetails = () => {
   // withdraw donation is a doner
   const onWithdrawalHandler = async () => {
     try {
+      console.log(donatedAmount);
       setSubmissionLoading(true);
-      const response = await withdrawDonatedAmountABI(id, donatedAmount);
+      const response = await withdrawDonatedAmountABI(id, donatedAmount.toString());
       console.log(response);
       dispatch(getCampaignById(id));
       dispatch(setNotification({ isSuccess: true, message: 'Withdrawal Successful!' }));
@@ -162,7 +163,7 @@ const ProjectDetails = () => {
     }
   };
 
-  // refunding when the goal was not met and campaign has ended
+  // refunding to self when the goal was not met and campaign has ended
   const refundToDonersHandler = async () => {
     try {
       setSubmissionLoading(true);
@@ -215,6 +216,8 @@ const ProjectDetails = () => {
   };
 
   const epochToJsSDate = (ts) => {
+    const timeIn = new Date(ts * 1000);
+    console.log(timeIn);
     const diff = ts * 1000 - Date.now();
     const hourDiff = Math.floor(diff / 3600000).toString();
     const dayDiff = Math.floor(diff / (3600000 * 24)).toString();
@@ -270,7 +273,11 @@ const ProjectDetails = () => {
                     </Typography>
                     <LinearProgress
                       variant="determinate"
-                      value={selectedCampaign.currentAmount / selectedCampaign.goal > 100 && 100}
+                      value={
+                        (selectedCampaign.currentAmount / selectedCampaign.goal) * 100 > 100
+                          ? 100
+                          : (selectedCampaign.currentAmount / selectedCampaign.goal) * 100
+                      }
                     />
                     {!active && <NonLoggedUserInteraction />}
                     {/* owner interaction */}
@@ -294,12 +301,37 @@ const ProjectDetails = () => {
                     {/* non owner interaction */}
                     {selectedCampaign.creator !== account && active && (
                       <React.Fragment>
-                        {donatedAmount !== 0 && (
+                        {/* display when the user have donated to this project before */}
+                        {donatedAmount > 0 && (
                           <Typography variant="subtitle1" color="text.secondary" noWrap={true}>
-                            You have donated {donatedAmount} wei to this campaign.
+                            You have donated {utils.formatEther(donatedAmount.toString())} ETH to
+                            this campaign.
                           </Typography>
                         )}
-                        {donatedAmount === 0 && (
+                        {/* for doner to withdraw their fund before the campaign expires */}
+                        {donatedAmount > 0 && !isProjectEnded && (
+                          <Button
+                            disabled={donatedAmount === 0}
+                            variant="contained"
+                            onClick={() => onWithdrawalHandler()}>
+                            Withdraw Donated Fund ({utils.formatEther(donatedAmount.toString())})
+                          </Button>
+                        )}
+                        {/* for doner to withdraw their fund after the campaign expires and the project goal was not met*/}
+                        {donatedAmount > 0 &&
+                          isProjectEnded &&
+                          !reimburseAllow &&
+                          selectedCampaign.currentAmount !== '0' && (
+                            <Button
+                              disabled={donatedAmount === 0}
+                              variant="contained"
+                              onClick={() => refundToDonersHandler()}>
+                              Refund Donated Fund ({utils.formatEther(donatedAmount.toString())})
+                            </Button>
+                          )}
+                        {/* display when the user have not donated to this project before*/}
+                        {/* Only display when the project has started*/}
+                        {donatedAmount === 0 && isProjectStarted && !isProjectEnded && (
                           <div
                             style={{
                               display: 'flex',
@@ -323,17 +355,14 @@ const ProjectDetails = () => {
                               disabled={isDonationDisable}
                               fullWidth
                               onClick={() => onSubmitHandler()}>
-                              Back Project
+                              Back Campaign
                             </Button>
                           </div>
                         )}
-                        {donatedAmount > 0 && (
-                          <Button
-                            disabled={donatedAmount === 0}
-                            variant="contained"
-                            onClick={() => onWithdrawalHandler()}>
-                            Withdraw Donated Fund ({utils.formatEther(donatedAmount.toString())})
-                          </Button>
+                        {!isProjectStarted && (
+                          <Typography variant="subtitle1" color="text.secondary" noWrap={true}>
+                            Campaign have not started.
+                          </Typography>
                         )}
                       </React.Fragment>
                     )}
@@ -373,14 +402,6 @@ const ProjectDetails = () => {
                 </Typography>
                 {selectedCampaign.creator === account && active && (
                   <React.Fragment>
-                    {isProjectEnded && (
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => refundToDonersHandler()}>
-                        Refund to doners
-                      </Button>
-                    )}
                     {!isProjectStarted && (
                       <Button
                         variant="contained"

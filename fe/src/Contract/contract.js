@@ -17,7 +17,7 @@ export const getAllCampaignsABI = () => {
 export const startCampaignABI = async (title, desc, img, goal, minCon, tierAmt, start, end) => {
   const account = await getUserAddress();
   goal = utils.parseEther(toString(goal));
-  minCon = utils.parseEther(toString(goal));
+  minCon = utils.parseEther(toString(minCon));
   return crowdFund.methods
     .startCampaign(title, desc, img, goal, minCon, tierAmt, start, end)
     .send({ from: account[0] });

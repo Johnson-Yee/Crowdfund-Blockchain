@@ -31,6 +31,7 @@ import {
 } from '../../Contract/contract';
 import { set } from 'lodash';
 import { setNotification } from '../../AppSlice';
+import { utils } from 'ethers';
 
 const ProjectDetails = () => {
   const navigate = useNavigate();
@@ -132,7 +133,7 @@ const ProjectDetails = () => {
         alert('Must input number only');
         return false;
       }
-      const response = await makeDonation(donationAmount, id);
+      const response = await makeDonation(utils.parseEther(donationAmount), id);
       console.log(response);
       dispatch(getCampaignById(id));
       dispatch(setNotification({ isSuccess: true, message: 'Donation Successful!' }));
@@ -145,6 +146,7 @@ const ProjectDetails = () => {
     }
   };
 
+  // withdraw donation is a doner
   const onWithdrawalHandler = async () => {
     try {
       setSubmissionLoading(true);
@@ -160,6 +162,7 @@ const ProjectDetails = () => {
     }
   };
 
+  // refunding when the goal was not met and campaign has ended
   const refundToDonersHandler = async () => {
     try {
       setSubmissionLoading(true);
@@ -175,6 +178,7 @@ const ProjectDetails = () => {
     }
   };
 
+  // withdraw your own donation as owner, when goal is met
   const withdrawFundToOwnAccountHandler = async () => {
     try {
       setSubmissionLoading(true);
@@ -190,6 +194,7 @@ const ProjectDetails = () => {
     }
   };
 
+  // dropping campaign that has yet to start
   const dropCampaignHandler = async () => {
     try {
       setSubmissionLoading(true);
@@ -273,11 +278,12 @@ const ProjectDetails = () => {
                       <React.Fragment>
                         {reimburseAllow && (
                           <Typography variant="subtitle1" color="text.secondary" noWrap={true}>
-                            Campaign has reached its goal.
+                            Campaign has reached its goal. Wait till it ends to withdraw.
                           </Typography>
                         )}
                         {reimburseAllow && (
                           <Button
+                            disabled={!isProjectEnded}
                             variant="contained"
                             onClick={() => withdrawFundToOwnAccountHandler()}>
                             Withdraw Funds to Own Account
@@ -304,8 +310,8 @@ const ProjectDetails = () => {
                             }}>
                             <TextField
                               label={
-                                'Min Amount: ' +
-                                selectedCampaign.minContribution / 1000000000000000000
+                                'Min Amount(ETH): ' +
+                                utils.formatEther(selectedCampaign.minContribution)
                               }
                               value={donationAmount}
                               fullWidth
@@ -326,7 +332,7 @@ const ProjectDetails = () => {
                             disabled={donatedAmount === 0}
                             variant="contained"
                             onClick={() => onWithdrawalHandler()}>
-                            Withdraw Donated Fund ({donatedAmount})
+                            Withdraw Donated Fund ({utils.formatEther(donatedAmount.toString())})
                           </Button>
                         )}
                       </React.Fragment>
@@ -337,9 +343,9 @@ const ProjectDetails = () => {
                     <Typography variant="subtitle1" color="text.secondary">
                       {(selectedCampaign.currentAmount * 100) / selectedCampaign.goal}% funded
                       <br />
-                      {selectedCampaign.currentAmount / 1000000000000000000} ETH pledged
+                      {utils.formatEther(selectedCampaign.currentAmount)} ETH pledged
                       <br />
-                      Goal : {selectedCampaign.goal / 1000000000000000000} ETH
+                      Goal : {utils.formatEther(selectedCampaign.goal)} ETH
                       <br />
                       {!isProjectStarted && epochToJsSDate(selectedCampaign.startTime) + 'to start'}
                       {isProjectStarted &&

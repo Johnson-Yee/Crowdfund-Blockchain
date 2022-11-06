@@ -153,13 +153,14 @@ const ProjectDetails = () => {
   const onWithdrawalHandler = async () => {
     try {
       setSubmissionLoading(true);
+      console.log(donatedAmount);
       const response = await withdrawDonatedAmountABI(id, donatedAmount);
       console.log(response);
       dispatch(getCampaignById(id));
       dispatch(setNotification({ isSuccess: true, message: 'Withdrawal Successful!' }));
     } catch (error) {
       console.log(error);
-      dispatch(setNotification({ isSuccess: false, message: 'Donation failed!' }));
+      dispatch(setNotification({ isSuccess: false, message: 'Withdrawal failed!' }));
     } finally {
       setSubmissionLoading(false);
     }
@@ -295,14 +296,15 @@ const ProjectDetails = () => {
                       </React.Fragment>
                     )}
                     {/* non owner interaction */}
-                    {selectedCampaign.creator !== account && active && isDonationDisable && (
+                    {selectedCampaign.creator !== account && active && (
                       <React.Fragment>
                         {donatedAmount !== 0 && (
                           <Typography variant="subtitle1" color="text.secondary" noWrap={true}>
-                            You have donated {donatedAmount} wei to this campaign.
+                            You have donated {utils.formatEther(donatedAmount.toString())} ETH to
+                            this campaign.
                           </Typography>
                         )}
-                        {donatedAmount === 0 && (
+                        {donatedAmount === 0 && !isDonationDisable && (
                           <div
                             style={{
                               display: 'flex',

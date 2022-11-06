@@ -21,7 +21,12 @@ import { injected } from '../../Wallet/Connector';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCampaignById } from './Redux/ProjectDetailsSlice';
 import { getCampaignByIdSelector, getLoadingState } from './Redux/Selector';
-import { checkDonatedAmount, checkDonatedAmountABI, makeDonation } from '../../Contract/contract';
+import {
+  checkDonatedAmount,
+  checkDonatedAmountABI,
+  makeDonation,
+  withdrawDonatedAmountABI
+} from '../../Contract/contract';
 import { set } from 'lodash';
 import { setNotification } from '../../AppSlice';
 
@@ -39,6 +44,7 @@ const ProjectDetails = () => {
 
   useEffect(() => {
     dispatch(getCampaignById(id));
+    setSubmissionLoading(false);
   }, []);
 
   useEffect(() => {
@@ -101,13 +107,28 @@ const ProjectDetails = () => {
       const response = await makeDonation(donationAmount, id);
       console.log(response);
       dispatch(getCampaignById(id));
-      dispatch(setNotification({ isSuccess: true, message: 'Campaign Created!' }));
+      dispatch(setNotification({ isSuccess: true, message: 'Donation Successful!' }));
     } catch (error) {
       console.log(error);
-      dispatch(setNotification({ isSuccess: false, message: 'Error in Creation!' }));
+      dispatch(setNotification({ isSuccess: false, message: 'Donation failed!' }));
     } finally {
       setSubmissionLoading(false);
       setDonatedAmount(0);
+    }
+  };
+
+  const onWithdrawalHandler = async () => {
+    try {
+      setSubmissionLoading(true);
+      const response = await withdrawDonatedAmountABI(id, donatedAmount);
+      console.log(response);
+      dispatch(getCampaignById(id));
+      dispatch(setNotification({ isSuccess: true, message: 'Withdrawal Successful!' }));
+    } catch (error) {
+      console.log(error);
+      dispatch(setNotification({ isSuccess: false, message: 'Donation failed!' }));
+    } finally {
+      setSubmissionLoading(false);
     }
   };
 
@@ -220,8 +241,11 @@ const ProjectDetails = () => {
                           </div>
                         )}
                         {donatedAmount > 0 && (
-                          <Button disabled={donatedAmount === 0} variant="contained">
-                            Withdraw Donated Fund
+                          <Button
+                            disabled={donatedAmount === 0}
+                            variant="contained"
+                            onClick={() => onWithdrawalHandler()}>
+                            Withdraw Donated Fund ({donatedAmount})
                           </Button>
                         )}
                       </React.Fragment>

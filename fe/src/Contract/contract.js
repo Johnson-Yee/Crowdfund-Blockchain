@@ -1,6 +1,8 @@
 import { useWeb3React } from '@web3-react/core';
 import Web3 from 'web3';
 import { CROWDFUND_ABI, CROWDFUND_ADDRESS } from './config';
+import { utils } from 'ethers';
+import { toString } from 'lodash';
 
 const web3 = new Web3(Web3.givenProvider || 'http://localhost:8545');
 const crowdFund = new web3.eth.Contract(CROWDFUND_ABI, CROWDFUND_ADDRESS);
@@ -14,6 +16,8 @@ export const getAllCampaignsABI = () => {
 };
 export const startCampaignABI = async (title, desc, img, goal, minCon, tierAmt, start, end) => {
   const account = await getUserAddress();
+  goal = utils.parseEther(toString(goal));
+  minCon = utils.parseEther(toString(goal));
   return crowdFund.methods
     .startCampaign(title, desc, img, goal, minCon, tierAmt, start, end)
     .send({ from: account[0] });

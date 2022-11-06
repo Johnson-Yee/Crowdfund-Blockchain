@@ -13,8 +13,8 @@ export const createCampaign = createAsyncThunk(
         title,
         desc,
         imageURL,
-        goal * 10 ** 18,
-        minCon * 10 ** 18,
+        goal,
+        minCon,
         0,
         startDate,
         endDate
@@ -23,6 +23,7 @@ export const createCampaign = createAsyncThunk(
       return res;
     } catch (err) {
       dispatch(setNotification({ isSuccess: false, message: 'Error in Creation!' }));
+      console.log(err);
       return rejectWithValue(err);
     }
   }

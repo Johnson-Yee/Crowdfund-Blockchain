@@ -31,6 +31,6 @@ export const backedCampaignsSelector = createSelector(
   backedCampaignIdsSelector,
   (items, ids) => {
     console.log('supported:', ids);
-    return map(ids, (id) => items[items.length - id - 1]);
+    return map(ids, (id) => items[items.length - id]);
   }
 );

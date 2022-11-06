@@ -41,3 +41,8 @@ export const checkDonatedAmountABI = async (campaignId) => {
   const account = await getUserAddress();
   return crowdFund.methods.potentialDonations(campaignId, account[0]).call();
 };
+
+export const withdrawDonatedAmountABI = async (campaignId, amountInWei) => {
+  const account = await getUserAddress();
+  return crowdFund.methods.withdraw(campaignId, amountInWei).send({ from: account[0] });
+};

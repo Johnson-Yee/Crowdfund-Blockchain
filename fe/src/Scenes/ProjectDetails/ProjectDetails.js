@@ -43,12 +43,34 @@ const ProjectDetails = () => {
   const [donatedAmount, setDonatedAmount] = useState(0);
   const [reimburseAllow, setReimburseAllow] = useState(false);
   const [submissionLoading, setSubmissionLoading] = useState(false);
+  const [isProjectStarted, setIsProjectStarted] = useState(false);
+  const [isProjectEnded, setIsProjectEnded] = useState(false);
   const { active, account, activate } = useWeb3React();
 
   useEffect(() => {
     dispatch(getCampaignById(id));
     setSubmissionLoading(false);
   }, []);
+
+  useEffect(() => {
+    const currentTime = Date.now();
+    const startingTime = selectedCampaign.startTime * 1000;
+    const endingTime = selectedCampaign.endTime * 1000;
+    if (startingTime > currentTime) {
+      console.log('Project have not started');
+      setIsProjectStarted(false);
+    } else {
+      console.log('Project have already started');
+      setIsProjectStarted(true);
+    }
+    if (endingTime > currentTime) {
+      console.log('Project have not ended.');
+      setIsProjectEnded(false);
+    } else {
+      console.log('Project have ended.');
+      setIsProjectEnded(true);
+    }
+  }, [selectedCampaign]);
 
   useEffect(() => {
     const currentAmount = parseInt(selectedCampaign.currentAmount);
@@ -319,7 +341,11 @@ const ProjectDetails = () => {
                       <br />
                       Goal : {selectedCampaign.goal / 1000000000000000000} ETH
                       <br />
-                      {epochToJsSDate(selectedCampaign.endTime)} to go
+                      {!isProjectStarted && epochToJsSDate(selectedCampaign.startTime) + 'to start'}
+                      {isProjectStarted &&
+                        !isProjectEnded &&
+                        epochToJsSDate(selectedCampaign.endTime) + 'to go'}
+                      {isProjectEnded && 'Campaign has ended'}
                     </Typography>
                   </Stack>
                 </CardContent>
@@ -341,15 +367,31 @@ const ProjectDetails = () => {
                 </Typography>
                 {selectedCampaign.creator === account && active && (
                   <React.Fragment>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => refundToDonersHandler()}>
-                      Refund to doners
-                    </Button>
-                    <Button variant="contained" color="error" onClick={() => dropCampaignHandler()}>
-                      Drop Project
-                    </Button>
+                    {isProjectEnded && (
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => refundToDonersHandler()}>
+                        Refund to doners
+                      </Button>
+                    )}
+                    {!isProjectStarted && (
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => dropCampaignHandler()}>
+                        Drop Project
+                      </Button>
+                    )}
+                    {!isProjectEnded && isProjectStarted && (
+                      <Typography
+                        gutterBottom
+                        textAlign={'center'}
+                        variant="subtitle1"
+                        color="text.secondary">
+                        Campaign in progress
+                      </Typography>
+                    )}
                   </React.Fragment>
                 )}
               </Grid>

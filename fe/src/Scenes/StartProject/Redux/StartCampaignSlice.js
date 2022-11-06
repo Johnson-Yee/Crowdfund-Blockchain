@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice, isFulfilled } from '@reduxjs/toolkit';
 import { map } from 'lodash';
 import { startCampaignABI } from '../../../Contract/contract';
+import { setNotification } from '../../../AppSlice';
 export const createCampaign = createAsyncThunk(
   'StartCampaign/createCampaigns',
-  async (arg, { getState, rejectWithValue }) => {
+  async (arg, { getState, rejectWithValue, dispatch }) => {
     try {
       const state = getState();
       const { title, desc, imageURL, goal, minCon, startDate, endDate } =
@@ -18,8 +19,10 @@ export const createCampaign = createAsyncThunk(
         startDate,
         endDate
       );
+      dispatch(setNotification({ isSuccess: true, message: 'Campaign Created!' }));
       return res;
     } catch (err) {
+      dispatch(setNotification({ isSuccess: false, message: 'Error in Creation!' }));
       return rejectWithValue(err);
     }
   }

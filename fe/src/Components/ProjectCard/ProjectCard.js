@@ -31,7 +31,7 @@ const ProjectCard = ({
   clickable = true
 }) => {
   console.log(id);
-  const percentageFunded = currAmt ? Math.round((currAmt / goal) * 100) / 10 : 0;
+  const percentageFunded = currAmt ? Math.round((currAmt / goal) * 100) : 0;
   const navigate = useNavigate();
 
   const directToProjectDetails = (id) => {
@@ -93,7 +93,10 @@ const ProjectCard = ({
             sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
             By: {creator}
           </Typography> */}
-          <LinearProgress variant="determinate" value={percentageFunded} />
+          <LinearProgress
+            variant="determinate"
+            value={percentageFunded > 100 ? 100 : percentageFunded}
+          />
           <Typography variant="subtitle1" color="text.secondary">
             {percentageFunded}% funded
             <br />

@@ -28,7 +28,7 @@ const parseCampaigns = (campaigns) => {
   return reduce(
     campaigns,
     (filter, c, index) => {
-      if (c[0] !== 0)
+      if (c[8] !== '0')
         filter.push({
           id: index + 1,
           status: statusCheck(c[8], c[9]),

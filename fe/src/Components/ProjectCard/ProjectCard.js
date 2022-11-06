@@ -45,11 +45,11 @@ const ProjectCard = ({
   const deadlineField = () => {
     const now = new Date().getTime() / 1000;
     if (now <= startTime) {
-      const t = new Date(startTime * 1000).toLocaleDateString();
+      const t = new Date(startTime * 1000).toLocaleDateString('en-GB');
       return `Starts on ${t}!`;
     } else if (now >= deadline) {
       return `Ended!`;
-    } else return `Ends on ${new Date(deadline * 1000).toLocaleDateString()} `;
+    } else return `Ends on ${new Date(deadline * 1000).toLocaleDateString('en-GB')} `;
   };
   const statusChipColor =
     status == ONGOING_CAMPAIGN ? 'success' : status == STARTING_CAMPAIGN ? 'warning' : 'error';

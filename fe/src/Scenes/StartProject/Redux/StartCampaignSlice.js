@@ -13,9 +13,9 @@ export const createCampaign = createAsyncThunk(
         title,
         desc,
         imageURL,
-        goal,
-        minCon,
-        20,
+        goal * 10 ** 18,
+        minCon * 10 ** 18,
+        0,
         startDate,
         endDate
       );

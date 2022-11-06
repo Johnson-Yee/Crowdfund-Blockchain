@@ -35,25 +35,18 @@ const CreateProjectForm = () => {
   const { account } = useWeb3React();
 
   // Input validators
-  const isGoalValid = Number.isInteger(goal);
-  const isMinConValid = Number.isInteger(minCon) && minCon < goal;
+  const isMinConValid = minCon < goal;
   const isEndDateValid = endDate && endDate > startDate;
   const isStartDateValid = () => {
     var today = new Date().setHours(0, 0, 0, 0) / 1000;
     return startDate && today <= startDate;
   };
   const isSubmitValid = () => {
-    console.log({
-      goal: isGoalValid,
-      minCon: isMinConValid,
-      isEndDateValid: isEndDateValid,
-      isStartDateValid: isStartDateValid()
-    });
     return (
       imageURL &&
       title &&
       desc &&
-      isGoalValid &&
+      goal &&
       isMinConValid &&
       isEndDateValid &&
       isStartDateValid() &&

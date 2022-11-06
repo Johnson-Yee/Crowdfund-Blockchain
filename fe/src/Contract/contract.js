@@ -22,3 +22,22 @@ export const backedCampaignABI = async () => {
   const account = await getUserAddress();
   return crowdFund.methods.retrieveAllBackedCampaigns().call({ from: account[0] });
 };
+
+export const createdCampaignABI = async () => {
+  const account = await getUserAddress();
+  return crowdFund.methods.retrieveAllCreatedCampaigns().call({ from: account[0] });
+};
+
+export const getCampaignByIndexABI = async (campaignIndex) => {
+  return crowdFund.methods.ongoingCampaigns(campaignIndex).call();
+};
+
+export const makeDonation = async (amount, campaignId) => {
+  const account = await getUserAddress();
+  return crowdFund.methods.donate(campaignId).send({ from: account[0], value: parseInt(amount) });
+};
+
+export const checkDonatedAmountABI = async (campaignId) => {
+  const account = await getUserAddress();
+  return crowdFund.methods.potentialDonations(campaignId, account[0]).call();
+};

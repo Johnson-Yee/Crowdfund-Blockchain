@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Card,
@@ -9,44 +9,61 @@ import {
   Box,
   Stack,
   Grid,
-  Button
+  Button,
+  CircularProgress,
+  TextField,
+  Backdrop
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { MOCK_PROJ_LIST } from '../../Constants/Mocks/MockProjList';
 import { useWeb3React } from '@web3-react/core';
 import { injected } from '../../Wallet/Connector';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCampaignById } from './Redux/ProjectDetailsSlice';
+import { getCampaignByIdSelector, getLoadingState } from './Redux/Selector';
+import { checkDonatedAmount, checkDonatedAmountABI, makeDonation } from '../../Contract/contract';
+import { set } from 'lodash';
 
 const ProjectDetails = () => {
+  const dispatch = useDispatch();
+  const selectedCampaign = useSelector(getCampaignByIdSelector);
+  const isLoading = useSelector(getLoadingState);
   let { id } = useParams();
-  const [projectdetail, setProjectdetail] = useState([]);
-  const [isOwnProject, setIsOwnProject] = useState();
+  const [isDonationDisable, setIsDonationDisable] = useState(false);
+  const [donationAmount, setDonationAmount] = useState(0);
+  const [donatedAmount, setDonatedAmount] = useState(0);
+  const [reimburseAllow, setReimburseAllow] = useState(false);
+  const [submissionLoading, setSubmissionLoading] = useState(false);
   const { active, account, activate } = useWeb3React();
 
   useEffect(() => {
-    // obtain project detail
-    console.log(MOCK_PROJ_LIST);
-    const selectedProject = MOCK_PROJ_LIST.filter((project) => project.id == id);
-    // check for ownership
-    if (selectedProject[0].creator === 'WenFeng') {
-      setIsOwnProject(true);
-    }
-    setProjectdetail(selectedProject);
+    dispatch(getCampaignById(id));
   }, []);
 
-  //   {
-  //     "id": 2,
-  //     "imageURL": "https://picsum.photos/400/300?random=2",
-  //     "title": "Facebook",
-  //     "desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  //     "creator": "WenFeng",
-  //     "percFunded": 60,
-  //     "amtPledged": 1000,
-  //     "deadline": 1000
-  // }
+  useEffect(() => {
+    const currentAmount = parseInt(selectedCampaign.currentAmount);
+    const goalAmount = parseInt(selectedCampaign.goal);
+    if (currentAmount > goalAmount) {
+      setReimburseAllow(true);
+    }
+  }, [selectedCampaign]);
 
-  console.log(projectdetail);
-  console.log(active);
-  console.log(account);
+  // check whether user have donated to the project
+  useEffect(() => {
+    const getDonatedAmount = async () => {
+      const donatedAmount = await checkDonatedAmountABI(id);
+      console.log(donatedAmount);
+      setDonatedAmount(parseInt(donatedAmount));
+    };
+    getDonatedAmount();
+  }, [selectedCampaign]);
+
+  const checkState = () => {
+    console.log(account);
+    console.log(active);
+    console.log(donatedAmount);
+    console.log(reimburseAllow);
+  };
 
   async function connect() {
     try {
@@ -66,31 +83,46 @@ const ProjectDetails = () => {
     );
   };
 
-  // need to check whether there is any fund to withdraw first
-  const OwnerInteraction = () => {
-    return (
-      <React.Fragment>
-        <Button variant="contained">Scrap Project</Button>
-        <Button variant="contained">Withdraw Funds to Own Account</Button>
-      </React.Fragment>
-    );
+  const onChangeHandler = (event) => {
+    console.log('here');
+    console.log(event.target.value);
+    setDonationAmount(event.target.value);
   };
 
-  // need to check whether the user have already donated to a campaign
-  const NonOwnerInteraction = () => {
-    return (
-      <React.Fragment>
-        <Button variant="contained">Back Project</Button>
-        <Button variant="contained">Withdraw Fund</Button>
-      </React.Fragment>
-    );
+  const onSubmitHandler = async () => {
+    try {
+      setSubmissionLoading(true);
+      var regex = /^[0-9.]+$/;
+      if (!donationAmount.match(regex)) {
+        alert('Must input number only');
+        return false;
+      }
+      const response = await makeDonation(donationAmount, id);
+      console.log(response);
+      dispatch(getCampaignById(id));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setSubmissionLoading(false);
+    }
+  };
+
+  const epochToJsSDate = (ts) => {
+    const diff = ts * 1000 - Date.now();
+    const hourDiff = Math.floor(diff / 3600000).toString();
+    const dayDiff = Math.floor(diff / (3600000 * 24)).toString();
+    if (dayDiff === '0') {
+      return hourDiff + ' hours ';
+    } else {
+      return dayDiff + ' day(s) ';
+    }
   };
 
   return (
-    <Grid container spacing={0} direction="column" alignItems="center" justify="center">
-      {projectdetail.map((projectdetail, index) => (
+    <>
+      <Grid container spacing={0} direction="column" alignItems="center" justify="center">
+        {isLoading && <CircularProgress />}
         <Card
-          key={index}
           className="animate__animated animate__fadeIn"
           raised
           sx={{
@@ -107,7 +139,7 @@ const ProjectDetails = () => {
               <CardMedia
                 item="true"
                 component="img"
-                src={'https://picsum.photos/400/300?random=2'}
+                src={selectedCampaign.img_url}
                 sx={{
                   height: '30vw',
                   width: '30vw',
@@ -126,26 +158,85 @@ const ProjectDetails = () => {
                 }}>
                 <Stack spacing={1}>
                   <Typography variant="h6" noWrap height="auto" sx={{ paddingTop: 1 }}>
-                    {projectdetail.title}
+                    {selectedCampaign.title} {id}
                   </Typography>
-                  <LinearProgress variant="determinate" value={projectdetail.percFunded} />
+                  <LinearProgress
+                    variant="determinate"
+                    value={selectedCampaign.currentAmount / selectedCampaign.goal > 100 && 100}
+                  />
                   {!active && <NonLoggedUserInteraction />}
-                  {isOwnProject && active && <OwnerInteraction />}
-                  {!isOwnProject && active && <NonOwnerInteraction />}
-                  <Typography variant="subtitle1" color="text.secondary">
-                    By: {projectdetail.creator}
+                  {/* owner interaction */}
+                  {selectedCampaign.creator === account && active && (
+                    <React.Fragment>
+                      {reimburseAllow && (
+                        <Typography variant="subtitle1" color="text.secondary" noWrap={true}>
+                          Campaign has reached its goal.
+                        </Typography>
+                      )}
+                      {reimburseAllow && (
+                        <Button variant="contained">Withdraw Funds to Own Account</Button>
+                      )}
+                    </React.Fragment>
+                  )}
+                  {/* non owner interaction */}
+                  {selectedCampaign.creator !== account && active && (
+                    <React.Fragment>
+                      {donatedAmount !== 0 && (
+                        <Typography variant="subtitle1" color="text.secondary" noWrap={true}>
+                          You have donated {donatedAmount} wei to this campaign.
+                        </Typography>
+                      )}
+                      {0 === 0 && (
+                        <div
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            width: '100%',
+                            justifyContent: 'space-evenly',
+                            gap: '5px'
+                          }}>
+                          <TextField
+                            label={
+                              'Min Amount: ' +
+                              selectedCampaign.minContribution / 1000000000000000000
+                            }
+                            value={donationAmount}
+                            fullWidth
+                            onChange={onChangeHandler}
+                          />
+                          <Button
+                            type="button"
+                            variant="contained"
+                            disabled={isDonationDisable}
+                            fullWidth
+                            onClick={() => onSubmitHandler()}>
+                            Back Project
+                          </Button>
+                        </div>
+                      )}
+                      {donatedAmount > 0 && (
+                        <Button disabled={donatedAmount === 0} variant="contained">
+                          Withdraw Donated Fund
+                        </Button>
+                      )}
+                    </React.Fragment>
+                  )}
+                  <Typography variant="subtitle1" color="text.secondary" noWrap={true}>
+                    By: {selectedCampaign.creator}
                   </Typography>
                   <Typography variant="subtitle1" color="text.secondary">
-                    {projectdetail.percFunded}% funded
+                    {(selectedCampaign.currentAmount * 100) / selectedCampaign.goal}% funded
                     <br />
-                    {projectdetail.amtPledged} ETH pledged
+                    {selectedCampaign.currentAmount / 1000000000000000000} ETH pledged
                     <br />
-                    {projectdetail.deadline} days to go
+                    Goal : {selectedCampaign.goal / 1000000000000000000} ETH
+                    <br />
+                    {epochToJsSDate(selectedCampaign.endTime)} to go
                   </Typography>
                 </Stack>
               </CardContent>
             </Box>
-            <Grid sx={{ padding: 2 }}>
+            <Grid sx={{ padding: 2, paddingTop: 1 }}>
               <Typography
                 gutterBottom
                 textAlign={'left'}
@@ -158,14 +249,26 @@ const ProjectDetails = () => {
                 textAlign={'left'}
                 variant="subtitle1"
                 color="text.secondary">
-                {projectdetail.desc}
+                {selectedCampaign.description}
               </Typography>
+              {selectedCampaign.creator === account && active && (
+                <React.Fragment>
+                  <Button variant="contained" color="error">
+                    Scrap Project
+                  </Button>
+                </React.Fragment>
+              )}
             </Grid>
             <Grid />
           </Grid>
         </Card>
-      ))}
-    </Grid>
+      </Grid>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={submissionLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    </>
   );
 };
 export default ProjectDetails;

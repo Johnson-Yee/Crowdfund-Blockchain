@@ -59,9 +59,11 @@ const ProjectDetails = () => {
     const endingTime = selectedCampaign.endTime * 1000;
     if (startingTime > currentTime) {
       console.log('Project have not started');
+      setIsDonationDisable(true);
       setIsProjectStarted(false);
     } else {
       console.log('Project have already started');
+      setIsDonationDisable(false);
       setIsProjectStarted(true);
     }
     if (endingTime > currentTime) {
@@ -76,6 +78,7 @@ const ProjectDetails = () => {
   useEffect(() => {
     const currentAmount = parseInt(selectedCampaign.currentAmount);
     const goalAmount = parseInt(selectedCampaign.goal);
+    console.log(selectedCampaign.minContribution);
     console.log(currentAmount > goalAmount);
     if (currentAmount > goalAmount) {
       setReimburseAllow(true);
@@ -292,7 +295,7 @@ const ProjectDetails = () => {
                       </React.Fragment>
                     )}
                     {/* non owner interaction */}
-                    {selectedCampaign.creator !== account && active && (
+                    {selectedCampaign.creator !== account && active && isDonationDisable && (
                       <React.Fragment>
                         {donatedAmount !== 0 && (
                           <Typography variant="subtitle1" color="text.secondary" noWrap={true}>

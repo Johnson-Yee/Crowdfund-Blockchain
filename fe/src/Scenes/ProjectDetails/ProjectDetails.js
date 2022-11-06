@@ -23,6 +23,7 @@ import { getCampaignById } from './Redux/ProjectDetailsSlice';
 import { getCampaignByIdSelector, getLoadingState } from './Redux/Selector';
 import { checkDonatedAmount, checkDonatedAmountABI, makeDonation } from '../../Contract/contract';
 import { set } from 'lodash';
+import { setNotification } from '../../AppSlice';
 
 const ProjectDetails = () => {
   const dispatch = useDispatch();
@@ -56,7 +57,7 @@ const ProjectDetails = () => {
       setDonatedAmount(parseInt(donatedAmount));
     };
     getDonatedAmount();
-  }, [selectedCampaign]);
+  }, [selectedCampaign, id]);
 
   const checkState = () => {
     console.log(account);
@@ -100,10 +101,13 @@ const ProjectDetails = () => {
       const response = await makeDonation(donationAmount, id);
       console.log(response);
       dispatch(getCampaignById(id));
+      dispatch(setNotification({ isSuccess: true, message: 'Campaign Created!' }));
     } catch (error) {
       console.log(error);
+      dispatch(setNotification({ isSuccess: false, message: 'Error in Creation!' }));
     } finally {
       setSubmissionLoading(false);
+      setDonatedAmount(0);
     }
   };
 
@@ -122,146 +126,148 @@ const ProjectDetails = () => {
     <>
       <Grid container spacing={0} direction="column" alignItems="center" justify="center">
         {isLoading && <CircularProgress />}
-        <Card
-          className="animate__animated animate__fadeIn"
-          raised
-          sx={{
-            height: 'auto',
-            width: '90%',
-            display: 'flex',
-            flexDirection: 'column',
-            padding: 0,
-            borderRadius: '15px',
-            bgcolor: '#D9D9D9'
-          }}>
-          <Grid sx={{ height: '100%', flexGrow: 1 }}>
-            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-              <CardMedia
-                item="true"
-                component="img"
-                src={selectedCampaign.img_url}
-                sx={{
-                  height: '30vw',
-                  width: '30vw',
-                  objectFit: 'fit',
-                  flexGrow: 1,
-                  borderRadius: '15px 0px 0px 0px'
-                }}
-              />
-              <CardContent
-                sx={{
-                  textAlign: 'left',
-                  bgcolor: '#D9D9D9',
-                  height: 'auto',
-                  flexGrow: 2,
-                  paddingTop: 0
-                }}>
-                <Stack spacing={1}>
-                  <Typography variant="h6" noWrap height="auto" sx={{ paddingTop: 1 }}>
-                    {selectedCampaign.title} {id}
-                  </Typography>
-                  <LinearProgress
-                    variant="determinate"
-                    value={selectedCampaign.currentAmount / selectedCampaign.goal > 100 && 100}
-                  />
-                  {!active && <NonLoggedUserInteraction />}
-                  {/* owner interaction */}
-                  {selectedCampaign.creator === account && active && (
-                    <React.Fragment>
-                      {reimburseAllow && (
-                        <Typography variant="subtitle1" color="text.secondary" noWrap={true}>
-                          Campaign has reached its goal.
-                        </Typography>
-                      )}
-                      {reimburseAllow && (
-                        <Button variant="contained">Withdraw Funds to Own Account</Button>
-                      )}
-                    </React.Fragment>
-                  )}
-                  {/* non owner interaction */}
-                  {selectedCampaign.creator !== account && active && (
-                    <React.Fragment>
-                      {donatedAmount !== 0 && (
-                        <Typography variant="subtitle1" color="text.secondary" noWrap={true}>
-                          You have donated {donatedAmount} wei to this campaign.
-                        </Typography>
-                      )}
-                      {0 === 0 && (
-                        <div
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            width: '100%',
-                            justifyContent: 'space-evenly',
-                            gap: '5px'
-                          }}>
-                          <TextField
-                            label={
-                              'Min Amount: ' +
-                              selectedCampaign.minContribution / 1000000000000000000
-                            }
-                            value={donationAmount}
-                            fullWidth
-                            onChange={onChangeHandler}
-                          />
-                          <Button
-                            type="button"
-                            variant="contained"
-                            disabled={isDonationDisable}
-                            fullWidth
-                            onClick={() => onSubmitHandler()}>
-                            Back Project
+        {!isLoading && (
+          <Card
+            className="animate__animated animate__fadeIn"
+            raised
+            sx={{
+              height: 'auto',
+              width: '90%',
+              display: 'flex',
+              flexDirection: 'column',
+              padding: 0,
+              borderRadius: '15px',
+              bgcolor: '#D9D9D9'
+            }}>
+            <Grid sx={{ height: '100%', flexGrow: 1 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                <CardMedia
+                  item="true"
+                  component="img"
+                  src={selectedCampaign.img_url}
+                  sx={{
+                    height: '30vw',
+                    width: '30vw',
+                    objectFit: 'fit',
+                    flexGrow: 1,
+                    borderRadius: '15px 0px 0px 0px'
+                  }}
+                />
+                <CardContent
+                  sx={{
+                    textAlign: 'left',
+                    bgcolor: '#D9D9D9',
+                    height: 'auto',
+                    flexGrow: 2,
+                    paddingTop: 0
+                  }}>
+                  <Stack spacing={1}>
+                    <Typography variant="h6" noWrap height="auto" sx={{ paddingTop: 1 }}>
+                      {selectedCampaign.title} (Campaign ID: {id})
+                    </Typography>
+                    <LinearProgress
+                      variant="determinate"
+                      value={selectedCampaign.currentAmount / selectedCampaign.goal > 100 && 100}
+                    />
+                    {!active && <NonLoggedUserInteraction />}
+                    {/* owner interaction */}
+                    {selectedCampaign.creator === account && active && (
+                      <React.Fragment>
+                        {reimburseAllow && (
+                          <Typography variant="subtitle1" color="text.secondary" noWrap={true}>
+                            Campaign has reached its goal.
+                          </Typography>
+                        )}
+                        {reimburseAllow && (
+                          <Button variant="contained">Withdraw Funds to Own Account</Button>
+                        )}
+                      </React.Fragment>
+                    )}
+                    {/* non owner interaction */}
+                    {selectedCampaign.creator !== account && active && (
+                      <React.Fragment>
+                        {donatedAmount !== 0 && (
+                          <Typography variant="subtitle1" color="text.secondary" noWrap={true}>
+                            You have donated {donatedAmount} wei to this campaign.
+                          </Typography>
+                        )}
+                        {donatedAmount === 0 && (
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              width: '100%',
+                              justifyContent: 'space-evenly',
+                              gap: '5px'
+                            }}>
+                            <TextField
+                              label={
+                                'Min Amount: ' +
+                                selectedCampaign.minContribution / 1000000000000000000
+                              }
+                              value={donationAmount}
+                              fullWidth
+                              onChange={onChangeHandler}
+                            />
+                            <Button
+                              type="button"
+                              variant="contained"
+                              disabled={isDonationDisable}
+                              fullWidth
+                              onClick={() => onSubmitHandler()}>
+                              Back Project
+                            </Button>
+                          </div>
+                        )}
+                        {donatedAmount > 0 && (
+                          <Button disabled={donatedAmount === 0} variant="contained">
+                            Withdraw Donated Fund
                           </Button>
-                        </div>
-                      )}
-                      {donatedAmount > 0 && (
-                        <Button disabled={donatedAmount === 0} variant="contained">
-                          Withdraw Donated Fund
-                        </Button>
-                      )}
-                    </React.Fragment>
-                  )}
-                  <Typography variant="subtitle1" color="text.secondary" noWrap={true}>
-                    By: {selectedCampaign.creator}
-                  </Typography>
-                  <Typography variant="subtitle1" color="text.secondary">
-                    {(selectedCampaign.currentAmount * 100) / selectedCampaign.goal}% funded
-                    <br />
-                    {selectedCampaign.currentAmount / 1000000000000000000} ETH pledged
-                    <br />
-                    Goal : {selectedCampaign.goal / 1000000000000000000} ETH
-                    <br />
-                    {epochToJsSDate(selectedCampaign.endTime)} to go
-                  </Typography>
-                </Stack>
-              </CardContent>
-            </Box>
-            <Grid sx={{ padding: 2, paddingTop: 1 }}>
-              <Typography
-                gutterBottom
-                textAlign={'left'}
-                variant="subtitle1"
-                color="text.secondary">
-                Description
-              </Typography>
-              <Typography
-                gutterBottom
-                textAlign={'left'}
-                variant="subtitle1"
-                color="text.secondary">
-                {selectedCampaign.description}
-              </Typography>
-              {selectedCampaign.creator === account && active && (
-                <React.Fragment>
-                  <Button variant="contained" color="error">
-                    Scrap Project
-                  </Button>
-                </React.Fragment>
-              )}
+                        )}
+                      </React.Fragment>
+                    )}
+                    <Typography variant="subtitle1" color="text.secondary" noWrap={true}>
+                      By: {selectedCampaign.creator}
+                    </Typography>
+                    <Typography variant="subtitle1" color="text.secondary">
+                      {(selectedCampaign.currentAmount * 100) / selectedCampaign.goal}% funded
+                      <br />
+                      {selectedCampaign.currentAmount / 1000000000000000000} ETH pledged
+                      <br />
+                      Goal : {selectedCampaign.goal / 1000000000000000000} ETH
+                      <br />
+                      {epochToJsSDate(selectedCampaign.endTime)} to go
+                    </Typography>
+                  </Stack>
+                </CardContent>
+              </Box>
+              <Grid sx={{ padding: 2, paddingTop: 1 }}>
+                <Typography
+                  gutterBottom
+                  textAlign={'left'}
+                  variant="subtitle1"
+                  color="text.secondary">
+                  Description
+                </Typography>
+                <Typography
+                  gutterBottom
+                  textAlign={'left'}
+                  variant="subtitle1"
+                  color="text.secondary">
+                  {selectedCampaign.description}
+                </Typography>
+                {selectedCampaign.creator === account && active && (
+                  <React.Fragment>
+                    <Button variant="contained" color="error">
+                      Scrap Project
+                    </Button>
+                  </React.Fragment>
+                )}
+              </Grid>
+              <Grid />
             </Grid>
-            <Grid />
-          </Grid>
-        </Card>
+          </Card>
+        )}
       </Grid>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

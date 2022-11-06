@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   Card,
   CardContent,
@@ -22,15 +22,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCampaignById } from './Redux/ProjectDetailsSlice';
 import { getCampaignByIdSelector, getLoadingState } from './Redux/Selector';
 import {
-  checkDonatedAmount,
   checkDonatedAmountABI,
+  dropCampaignABI,
   makeDonation,
-  withdrawDonatedAmountABI
+  refundToDonersABI,
+  withdrawDonatedAmountABI,
+  withDrawFundToOwnAccountABI
 } from '../../Contract/contract';
 import { set } from 'lodash';
 import { setNotification } from '../../AppSlice';
 
 const ProjectDetails = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const selectedCampaign = useSelector(getCampaignByIdSelector);
   const isLoading = useSelector(getLoadingState);
@@ -50,8 +53,11 @@ const ProjectDetails = () => {
   useEffect(() => {
     const currentAmount = parseInt(selectedCampaign.currentAmount);
     const goalAmount = parseInt(selectedCampaign.goal);
+    console.log(currentAmount > goalAmount);
     if (currentAmount > goalAmount) {
       setReimburseAllow(true);
+    } else {
+      setReimburseAllow(false);
     }
   }, [selectedCampaign]);
 
@@ -132,6 +138,55 @@ const ProjectDetails = () => {
     }
   };
 
+  const refundToDonersHandler = async () => {
+    try {
+      setSubmissionLoading(true);
+      const response = await refundToDonersABI(id);
+      console.log(response);
+      dispatch(getCampaignById(id));
+      dispatch(setNotification({ isSuccess: true, message: 'Refund Successful!' }));
+    } catch (error) {
+      console.log(error);
+      dispatch(setNotification({ isSuccess: false, message: 'Refund failed!' }));
+    } finally {
+      setSubmissionLoading(false);
+    }
+  };
+
+  const withdrawFundToOwnAccountHandler = async () => {
+    try {
+      setSubmissionLoading(true);
+      const response = await withDrawFundToOwnAccountABI(selectedCampaign.currentAmount, id);
+      console.log(response);
+      dispatch(getCampaignById(id));
+      dispatch(setNotification({ isSuccess: true, message: 'Withdraw Successful!' }));
+    } catch (error) {
+      console.log(error);
+      dispatch(setNotification({ isSuccess: false, message: 'Withdraw failed!' }));
+    } finally {
+      setSubmissionLoading(false);
+    }
+  };
+
+  const dropCampaignHandler = async () => {
+    try {
+      setSubmissionLoading(true);
+      const response = await dropCampaignABI(id);
+      console.log(response);
+      dispatch(setNotification({ isSuccess: true, message: 'Drop Successful! Redirecting...' }));
+      setTimeout(() => directToPage('home'), 5000);
+    } catch (error) {
+      console.log(error);
+      dispatch(setNotification({ isSuccess: false, message: 'Drop failed!' }));
+    } finally {
+      setSubmissionLoading(false);
+    }
+  };
+
+  const directToPage = (link) => {
+    navigate('../' + link);
+  };
+
   const epochToJsSDate = (ts) => {
     const diff = ts * 1000 - Date.now();
     const hourDiff = Math.floor(diff / 3600000).toString();
@@ -200,7 +255,11 @@ const ProjectDetails = () => {
                           </Typography>
                         )}
                         {reimburseAllow && (
-                          <Button variant="contained">Withdraw Funds to Own Account</Button>
+                          <Button
+                            variant="contained"
+                            onClick={() => withdrawFundToOwnAccountHandler()}>
+                            Withdraw Funds to Own Account
+                          </Button>
                         )}
                       </React.Fragment>
                     )}
@@ -282,8 +341,14 @@ const ProjectDetails = () => {
                 </Typography>
                 {selectedCampaign.creator === account && active && (
                   <React.Fragment>
-                    <Button variant="contained" color="error">
-                      Scrap Project
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => refundToDonersHandler()}>
+                      Refund to doners
+                    </Button>
+                    <Button variant="contained" color="error" onClick={() => dropCampaignHandler()}>
+                      Drop Project
                     </Button>
                   </React.Fragment>
                 )}
